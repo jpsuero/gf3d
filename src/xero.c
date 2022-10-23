@@ -2,34 +2,30 @@
 #include "gfc_types.h"
 
 #include "gf3d_camera.h"
-#include "player.h"
+#include "xero.h"
 
+void xero_think(Entity *self);
+void xero_update(Entity *self);
 
-void player_think(Entity *self);
-void player_update(Entity *self);
-
-Entity *player_new(Vector3D position)
+Entity *xero_new(Vector3D position)
 {
     Entity *ent = NULL;
-    
+
     ent = entity_new();
-    if (!ent)
+    if(!ent)
     {
-        slog("UGH OHHHH, no player for you!");
+        slog("xero entity not found");
         return NULL;
     }
-    
     ent->model = gf3d_model_load("dino");
-    ent->think = player_think;
-    ent->update = player_update;
-    vector3d_copy(ent->position,position);
-    ent->rotation.x = -M_PI;
-    ent->gravity = vector3d(0, 0, .5);
+    ent->think = xero_think;
+    ent->update = xero_update;
+    vector3d_copy(ent->position, position);
+    ent->rotation.x = M_PI;
     return ent;
 }
 
-
-void player_think(Entity *self)
+void xero_think(Entity *self)
 {
     Vector3D forward;
     Vector3D right;
@@ -42,19 +38,13 @@ void player_think(Entity *self)
     vector3d_set_magnitude(&right,0.1);
     vector3d_set_magnitude(&up,0.1);
 
-    //CONSTANT GRAVITY
-    if(self->position.z > 0)
-    {
-        self->position.z -= self->gravity.z;
-    }
-
     if (keys[SDL_SCANCODE_W])
     {   
-        vector3d_add(self->position,self->position,-forward);
+        vector3d_add(self->position,self->position,forward);
     }
     if (keys[SDL_SCANCODE_S])
     {
-        vector3d_add(self->position,self->position,forward);        
+        vector3d_add(self->position,self->position,-forward);        
     }
     if (keys[SDL_SCANCODE_D])
     {
@@ -64,7 +54,7 @@ void player_think(Entity *self)
     {
         vector3d_add(self->position,self->position,-right);
     }
-    if (keys[SDL_SCANCODE_SPACE])self->position.z += 3;
+    if (keys[SDL_SCANCODE_SPACE])self->position.z += 0.10;
     if (keys[SDL_SCANCODE_Z])self->position.z -= 0.10;
     
     if (keys[SDL_SCANCODE_UP])self->rotation.x -= 0.0050;
@@ -74,11 +64,11 @@ void player_think(Entity *self)
 
 }
 
-void player_update(Entity *self)
+void xero_update(Entity *self)
 {
     if (!self)return;
-    gf3d_camera_set_position((vector3d(self->position.x, self->position.y+50, self->position.z+20)));
-    gf3d_camera_set_rotation(self->rotation); 
+    gf3d_camera_set_position(self->position);
+    gf3d_camera_set_rotation(self->rotation);
 }
 
 /*eol@eof*/

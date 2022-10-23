@@ -46,19 +46,22 @@ int main(int argc,char *argv[])
     
     entity_system_init(1024);
     
-    mouse = gf3d_sprite_load("images/pointer.png",32,32, 16);
+    mouse = gf3d_sprite_load("images/spritesheet.png",50,50, 1);
     
     w = world_load("config/testworld.json");
     
-    for (a = 0; a < 10;a++)
+    /*for (a = 0; a < 10;a++)
     {
-        agumon_new(vector3d(a * 10 -50,0,0));
+        agumon_new(vector3d(a * 10,0,0), vector3d(a,a,a));
     }
-    
+    */
     slog_sync();
     gf3d_camera_set_scale(vector3d(1,1,1));
     player_new(vector3d(0,0,20));
     
+    //player scale up
+    
+
     // main game loop
     slog("gf3d main loop begin");
     while(!done)
@@ -81,7 +84,7 @@ int main(int argc,char *argv[])
                 world_draw(w);
                 entity_draw_all();
             //2D draws
-                gf3d_sprite_draw(mouse,vector2d(mousex,mousey),vector2d(2,2),(Uint32)mouseFrame);
+                gf3d_sprite_draw(mouse,vector2d(mousex,mousey),vector2d(10,1),(Uint32)mouseFrame);
         gf3d_vgraphics_render_end();
 
         if (gfc_input_command_down("exit"))done = 1; // exit condition

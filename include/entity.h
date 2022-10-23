@@ -21,7 +21,7 @@ typedef struct Entity_S
     Vector3D    velocity;
     Vector3D    acceleration;
     
-    
+    Vector3D    gravity;
     Vector3D    scale;
     Vector3D    rotation;
     

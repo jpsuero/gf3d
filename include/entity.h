@@ -24,6 +24,7 @@ typedef struct Entity_S
     Vector3D    gravity;
     Vector3D    scale;
     Vector3D    rotation;
+    Vector3D    camRotate;
     
     Uint32      health;     /**<entity dies when it reaches zero*/
     // WHATEVER ELSE WE MIGHT NEED FOR ENTITIES

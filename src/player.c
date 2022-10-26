@@ -33,16 +33,21 @@ Entity *player_new(Vector3D position)
 void player_think(Entity *self)
 {
     Vector3D forward;
+    Vector3D camForward = {0};
     Vector3D right;
     Vector3D up;
+    Vector2D j;
     
     const Uint8 * keys;
     keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
 
-    vector3d_angle_vectors(self->camRotate, &forward, &right, &up);
+    vector3d_angle_vectors(self->rotation, &forward, &right, &up);
     vector3d_set_magnitude(&forward,0.1);
     vector3d_set_magnitude(&right,0.1);
     vector3d_set_magnitude(&up,0.1);
+    j = vector2d_from_angle(self->camRotate.z);
+    camForward.x = j.x;
+    camForward.y = j.y;
 
     //CONSTANT GRAVITY
     /*
@@ -52,23 +57,22 @@ void player_think(Entity *self)
     }*/
     if (keys[SDL_SCANCODE_W])
     {   
-        vector3d_add(self->position,self->position, forward); 
-        self->rotation.z = self->camRotate.z;
+        vector3d_add(self->position,self->position, camForward);
+        self->rotation.z = self->camRotate.z;  
     }
     if (keys[SDL_SCANCODE_S])
     {
-        vector3d_add(self->position,self->position,-forward);
-        self->rotation.z = -self->camRotate.z;
+        vector3d_add(self->position,self->position,-camForward);
+        self->rotation.z = self->camRotate.z + 150;  
+
     }
     if (keys[SDL_SCANCODE_D])
     {
         vector3d_add(self->position,self->position,right);
-        //self->rotation.z = self->camRotate.z+90;
     }
     if (keys[SDL_SCANCODE_A])    
     {
         vector3d_add(self->position,self->position,-right);
-        //self->rotation.z = self->camRotate.z-90;
     }
     if (keys[SDL_SCANCODE_SPACE])self->position.z += .20;
 
@@ -105,7 +109,6 @@ void player_update(Entity *self)
         forward.y = w.y * 100;
         vector3d_add(position,position,-forward);
     
-    //gf3d_camera_set_position((vector3d(self->position.x, self->position.y+50, self->position.z+20)));
     gf3d_camera_set_position(position);
     gf3d_camera_set_rotation(rotation);     
     

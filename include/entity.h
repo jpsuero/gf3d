@@ -21,12 +21,14 @@ typedef struct Entity_S
     Vector3D    velocity;
     Vector3D    acceleration;
     
-    
+    Vector3D    gravity;
     Vector3D    scale;
     Vector3D    rotation;
+    Vector3D    camRotate;
     
     Uint32      health;     /**<entity dies when it reaches zero*/
     // WHATEVER ELSE WE MIGHT NEED FOR ENTITIES
+    int         canJump;
     struct Entity_S *target;    /**<entity to target for weapons / ai*/
     
     void *customData;   /**<IF an entity needs to keep track of extra data, we can do it here*/

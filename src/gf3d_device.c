@@ -1,5 +1,4 @@
 #include "simple_logger.h"
-#include "simple_logger.h"
 #include "simple_json.h"
 
 #include "gfc_types.h"

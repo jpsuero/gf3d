@@ -34,7 +34,7 @@ int main(int argc,char *argv[])
     {
         if (strcmp(argv[a],"--debug") == 0)
         {
-            __DEBUG = 0;
+            __DEBUG = 1;
         }
     }
     

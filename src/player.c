@@ -4,6 +4,8 @@
 #include "gf3d_camera.h"
 #include "player.h"
 
+#include "gfc_primitives.h"
+
 void player_think(Entity *self);
 void player_update(Entity *self);
 
@@ -27,6 +29,8 @@ Entity *player_new(Vector3D position)
     ent->rotation.y = -M_PI;
     ent->gravity = vector3d(0, 0, -.1);
     ent->canJump = 1;
+    ent->scale = vector3d(1,1,1);
+    ent->bounds = gfc_box(1,1,1,10,10,10);
     return ent;
 }
 
@@ -85,7 +89,7 @@ void player_think(Entity *self)
     }
     if (keys[SDL_SCANCODE_SPACE] && self->canJump)
     {
-        vector3d_add(self->position,self->position,vector3d(0,0,1));
+        vector3d_add(self->position,self->position,vector3d(0,0,.5));
         self->canJump = 0;
     }
     else
@@ -96,9 +100,10 @@ void player_think(Entity *self)
     if (keys[SDL_SCANCODE_Z])self->position.z -= 0.10;
     
     //player melee = e
-
+    //if (keys[SDL_SCANCODE_Q]) meleeAttack(self);
     //player heavy = q
-    
+    //if (keys[SDL_SCANCODE_E]) ultAttack(self);
+
     
     //player rotation testing
     //if (keys[SDL_SCANCODE_Q])self->rotation.z -= 0.0050;
@@ -137,5 +142,61 @@ void player_update(Entity *self)
     gf3d_camera_set_rotation(rotation);     
     
 }
+
+/*void meleeAttack(Entity *self)
+{
+    if(self->element == 1)
+    {
+        fireball_new();
+    }
+
+    if(self->element == 2)
+    {
+        ice_shard();
+    }
+
+    if(self->element == 3)
+    {
+        hypno_beam();
+    }
+
+    if(self->element == 4)
+    {
+        lightning();
+    }
+
+    if(self->element == 5)
+    {
+        wind_shove();
+    }
+}
+
+void ultAttack(Entity *self)
+{
+    if(self->element == 1)
+    {
+        fire();
+    }
+
+    if(self->element == 2)
+    {
+        ice_shard();
+    }
+
+    if(self->element == 3)
+    {
+        hypno_beam();
+    }
+
+    if(self->element == 4)
+    {
+        lightning();
+    }
+
+    if(self->element == 5)
+    {
+        wind_shove();
+    }
+}*/
 
 /*eol@eof*/

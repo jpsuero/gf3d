@@ -88,6 +88,16 @@ Model * gf3d_model_load(char * filename)
 
     snprintf(assetname,GFCLINELEN,"images/%s.png",filename);
     model->texture = gf3d_texture_load(assetname);
+
+    /*if(assetname == "Devil")
+    {
+        snprintf(assetname,GFCLINELEN,"images/%s_Normal.png",filename);
+        model->texture = gf3d_texture_load(assetname);
+
+        snprintf(assetname,GFCLINELEN,"images/%s_Roughtness.png",filename);
+        model->texture = gf3d_texture_load(assetname);
+    }*/
+    
     
     return model;
 }

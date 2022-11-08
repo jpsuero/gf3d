@@ -5,6 +5,8 @@
 
 #include "gf3d_model.h"
 
+#include "gfc_primitives.h"
+
 
 typedef struct Entity_S
 {
@@ -25,10 +27,14 @@ typedef struct Entity_S
     Vector3D    scale;
     Vector3D    rotation;
     Vector3D    camRotate;
+
+    Box         bounds;     //for collisions
     
     Uint32      health;     /**<entity dies when it reaches zero*/
     // WHATEVER ELSE WE MIGHT NEED FOR ENTITIES
+    int         element; /*current element for player*/
     int         canJump;
+    int         gateway; /*0-4 for each different gateway*/ 
     struct Entity_S *target;    /**<entity to target for weapons / ai*/
     
     void *customData;   /**<IF an entity needs to keep track of extra data, we can do it here*/

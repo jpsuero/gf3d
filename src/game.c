@@ -17,6 +17,7 @@
 #include "agumon.h"
 #include "player.h"
 #include "world.h"
+#include "door.h"
 
 extern int __DEBUG;
 
@@ -58,6 +59,12 @@ int main(int argc,char *argv[])
     slog_sync();
     gf3d_camera_set_scale(vector3d(1,1,1));
     player_new(vector3d(0,0,20));
+    door_new(vector3d(-150, 0, 0), 1);
+    door_new(vector3d(0, 150, 0), 2);
+    door_new(vector3d(150, 0, 0), 3);
+    door_new(vector3d(0, -150, 0), 4);
+
+
     
     //player scale up
     

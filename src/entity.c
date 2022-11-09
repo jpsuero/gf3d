@@ -113,6 +113,19 @@ void entity_update(Entity *self)
     
     vector3d_add(self->position,self->position,self->velocity);
     vector3d_add(self->velocity,self->acceleration,self->velocity);
+
+    /*if(self->hasGravity)
+    {
+        if(!self->isGrounded)
+        {
+            self->acceleration.z = -.0025;
+        }
+        else
+        {
+            self->acceleration.z = 0;
+            self->position.y = 0;
+        }
+    }*/
     
     gfc_matrix_identity(self->modelMat);
     gfc_matrix_scale(self->modelMat,self->scale);
@@ -136,6 +149,61 @@ void entity_update_all()
             continue;// skip this iteration of the loop
         }
         entity_update(&entity_manager.entity_list[i]);
+    }
+}
+
+
+Entity *collisionCheck(Entity *col)
+{
+    int i;
+    for(i = 0; i < entity_manager.entity_count; i++)
+    {
+        if(gfc_point_in_sphere(col->position, entity_manager.entity_list[i].circle))
+        {
+            slog("colliding");
+            return &entity_manager.entity_list[i];
+        }
+        else
+        {
+            //slog("not colliding");
+        }
+        return NULL;
+    }
+}
+
+Entity *getPlayer()
+{
+    int i;
+    for(i = 0; i < entity_manager.entity_count; i++)
+    {
+        if(entity_manager.entity_list[i].tag == 0)
+        {
+            
+            return &entity_manager.entity_list[i];
+        }
+        else
+        {
+            //slog("not colliding");
+        }
+        return NULL;
+    }
+}
+
+Entity *getWorld()
+{
+    int i;
+    for(i = 0; i < entity_manager.entity_count; i++)
+    {
+        if(entity_manager.entity_list[i].tag == 10)
+        {
+            
+            return &entity_manager.entity_list[i];
+        }
+        else
+        {
+            //slog("not colliding");
+        }
+        return NULL;
     }
 }
 

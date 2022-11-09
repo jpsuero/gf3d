@@ -2,7 +2,7 @@
 #define __ENTITY_H__
 
 #include "gfc_types.h"
-
+#include "gfc_color.h"
 #include "gf3d_model.h"
 
 #include "gfc_primitives.h"
@@ -19,6 +19,8 @@ typedef struct Entity_S
     void       (*damage)(struct Entity_S *self, float damage, struct Entity_S *inflictor); /**<pointer to the think function*/
     void       (*onDeath)(struct Entity_S *self); /**<pointer to an funciton to call when the entity dies*/
     
+    Color       color;
+
     Vector3D    position;  
     Vector3D    velocity;
     Vector3D    acceleration;
@@ -29,11 +31,21 @@ typedef struct Entity_S
     Vector3D    camRotate;
 
     Box         bounds;     //for collisions
+    Sphere      circle;
+
+    int         isGrounded;
+    int         hasGravity;
     
     Uint32      health;     /**<entity dies when it reaches zero*/
     // WHATEVER ELSE WE MIGHT NEED FOR ENTITIES
     int         element; /*current element for player*/
     int         canJump;
+    int         jumpCount;
+    int         canAttack;
+    int         lifespan;
+    int         isColliding;
+    int         level;
+    int         tag; /*1 for player, 2 for enemies, 3 for platforms, 4 for projectiles*/
     int         gateway; /*0-4 for each different gateway*/ 
     struct Entity_S *target;    /**<entity to target for weapons / ai*/
     
@@ -85,5 +97,13 @@ void entity_think_all();
  * @brief run the update functions for ALL active entities
  */
 void entity_update_all();
+
+/**
+ * @brief collision check
+ * @param col entity in question
+ */
+Entity *collisionCheck(Entity *col);
+
+Entity *getPlayer();
 
 #endif

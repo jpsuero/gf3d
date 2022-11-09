@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "gf3d_obj_load.h": "c",
+        "gf3d_model.h": "c"
+    }
+}

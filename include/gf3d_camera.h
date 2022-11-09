@@ -48,6 +48,12 @@ void gf3d_camera_look_at(
 void gf3d_camera_set_position(Vector3D position);
 
 /**
+ * @brief get position of camera
+*/
+Vector3D gf3d_camera_get_position();
+
+
+/**
  * @brief explicitely set the camera scale (to be applied to the entire scene)
  * @param scale the new scale for the camera
  */

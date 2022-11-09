@@ -14,6 +14,8 @@ typedef struct
 }World;
 */
 
+static World *currentLevel = NULL;
+
 World *world_load(char *filename)
 {
     SJson *json,*wjson;
@@ -59,6 +61,7 @@ World *world_load(char *filename)
         slog("world data (%s) has no model",filename);
     }
     sj_free(json);
+    currentLevel = w;
     return w;
 }
 
@@ -79,6 +82,11 @@ void world_delete(World *world)
 void world_run_updates(World *world);
 
 void world_add_entity(World *world,Entity *entity);
+
+World *getLevel()
+{
+    return currentLevel;
+}
 
 
 /*eol@eof*/

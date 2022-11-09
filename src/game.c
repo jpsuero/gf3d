@@ -12,9 +12,9 @@
 #include "gf3d_camera.h"
 #include "gf3d_texture.h"
 #include "gf3d_draw.h"
-//#include "gf3d_sprite.h"
+#include "gf3d_sprite.h"
 
-#include "gf2d_sprite.h"
+//#include "gf2d_sprite.h"
 #include "gf2d_font.h"
 #include "gf2d_draw.h"
 
@@ -34,6 +34,7 @@ int main(int argc,char *argv[])
     int a;
     
     Sprite *mouse = NULL;
+    Sprite *element = NULL;
     int mousex,mousey;
     float mouseFrame = 0;
     World *w;
@@ -54,15 +55,12 @@ int main(int argc,char *argv[])
     
     entity_system_init(1024);
     
-    mouse = gf2d_sprite_load("images/spritesheet.png",50,50, 1);
+    mouse = gf3d_sprite_load("images/spritesheet.png",50,50, 1);
+    element = gf3d_sprite_load("images/fire.png", 1920,1080, 1);
+    
     
     w = world_load("config/testworld.json");
     
-    /*for (a = 0; a < 10;a++)
-    {
-        agumon_new(vector3d(a * 10,0,0), vector3d(a,a,a));
-    }
-    */
     slog_sync();
     gf3d_camera_set_scale(vector3d(1,1,1));
     Entity *player = player_new(vector3d(0,0,20));
@@ -117,6 +115,7 @@ int main(int argc,char *argv[])
         //}
         
     
+        //out of bounds
         if(player->position.x < -241)player->position.x += .5;
         if(player->position.x > 241)player->position.x -= .5;
     
@@ -125,10 +124,6 @@ int main(int argc,char *argv[])
         if(player->position.y > 241)player->position.y -= .5;
 
 
-        slog("%f", player->position.x);
-        slog("%f", player->position.y);
-        slog("%f", player->position.z);
-
         // configure render command for graphics command pool
         // for each mesh, get a command and configure it from the pool
         gf3d_vgraphics_render_start();
@@ -136,9 +131,10 @@ int main(int argc,char *argv[])
             //3D draws
                 world_draw(getLevel());
                 entity_draw_all();
-                //gf3d_draw_cube_wireframe(player->bounds, player->position, player->rotation, vector3d(1,1,1), player->color);
             //2D draws
-                gf3d_sprite_draw(mouse,vector2d(mousex,mousey),vector2d(2,2),vector3d(8,8,0),gfc_color(0.3,.9,1,0.9),(Uint32)mouseFrame);
+                //gf3d_sprite_draw(mouse,vector2d(mousex,mousey),vector2d(2,2),(Uint32)mouseFrame);
+                gf3d_sprite_draw(element,vector2d(0, 0),vector2d(1,1),1);
+        
         gf3d_vgraphics_render_end();
 
         if (gfc_input_command_down("exit"))done = 1; // exit condition

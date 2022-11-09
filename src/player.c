@@ -41,6 +41,7 @@ Entity *player_new(Vector3D position)
     ent->color = gfc_color_from_vector4(vector4d(255,255,0,0));
     ent->tag = 0;
     ent->level = 0;
+    ent->health = 5;
     return ent;
     
 }

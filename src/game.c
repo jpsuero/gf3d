@@ -25,6 +25,12 @@
 #include "world.h"
 #include "door.h"
 #include "enemy1.h"
+#include "fireElement.h"
+#include "iceElement.h"
+#include "electricElement.h"
+#include "voidElement.h"
+#include "morphElement.h"
+
 
 extern int __DEBUG;
 
@@ -72,6 +78,8 @@ int main(int argc,char *argv[])
     door3->tag =3;
     Entity *door4 = door_new(vector3d(0, -150, 0), 4);
     door4->tag =4;
+    Entity *door5 = door_new(vector3d(150, -150, 0), 5);
+    door5->tag =5;
      
     //player scale up
     
@@ -91,7 +99,55 @@ int main(int argc,char *argv[])
         gf3d_camera_update_view();
         gf3d_camera_get_view_mat4(gf3d_vgraphics_get_view_matrix());
 
-        //level changer
+        //element dropper
+        if(player)
+        {
+            switch(player->level)
+            {
+                case 1:
+                {
+                    if(player->electricKill >= 4 && player->electric==0 && player->electricElement ==0)
+                    {
+                        electric_element_new(vector3d(0,0,0));
+                        player->electricElement =1;
+                    }
+                    break;
+                }
+                case 2:
+                {
+                    if(player->fire == 0 && player->fireElement==0)
+                    {
+                        fire_element_new(vector3d(10,10,0));
+                        player->fireElement =1;
+                    }
+                }
+                case 3:
+                {
+                    if(player->morphKill >= 4 && player->bulk==0 &&player->morphElement ==0)
+                    {
+                        morph_element_new(vector3d(0,0,0));
+                        player->morphElement=1;
+                    }
+                }
+                case 4:
+                {
+                    if(player->darkKill >= 4 && player->dark ==0 && player->darkElement==0)
+                    {
+                        void_element_new(vector3d(0,0,0));
+                        player->darkElement=1;
+
+                    }
+                }
+                case 5:
+                {
+                    if(player->iceKill >= 4 && player->ice ==0 && player->darkElement==0)
+                    {
+                        ice_element_new(vector3d(0,0,0));
+                        player->darkElement=1;
+                    }
+                }
+            }
+        }
         //uichanger
         if(player)
         {

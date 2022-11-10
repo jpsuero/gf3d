@@ -52,6 +52,20 @@ void enemy2_think(Entity *self)
     }
     if(self->shootBuffer > 5000)self->shootBuffer =0;
 
+    if(self->shocked == 1)
+    {
+        self->scale.x +=.01;
+        self->scale.y +=.01;
+        self->scale.z +=.01;
+        self->rotation.x += .050;
+        self->rotation.y += .050;
+        self->rotation.z += .050;
+        if(self->scale.z > 20)
+        {
+            entity_free(self);
+        }
+    }
+
 }
 
 void enemy2_update(Entity *self)

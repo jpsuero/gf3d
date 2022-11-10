@@ -62,6 +62,45 @@ void fireball_think(Entity *self)
     {
         if(collider->tag == 6)
         {
+            switch(getPlayer()->level)
+            {
+                case 1:
+                {
+                    entity_free(collider);
+                    entity_free(self);
+                    getPlayer()->electricKill++;
+                    break;
+                }
+                case 2:
+                {
+                    entity_free(collider);
+                    entity_free(self);
+                    getPlayer()->fireKill++;
+                    break;
+                }
+                case 3:
+                {
+                    entity_free(collider);
+                    entity_free(self);
+                    getPlayer()->morphKill++;
+                    break;
+                }
+                case 4:
+                {
+                    entity_free(collider);
+                    entity_free(self);
+                    getPlayer()->darkKill++;
+                    break;
+                }
+                case 5:
+                {
+                    entity_free(collider);
+                    entity_free(self);
+                    getPlayer()->iceKill++;
+                    break;
+                }
+        
+            }
             entity_free(collider);
             entity_free(self);
         }

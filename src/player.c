@@ -39,11 +39,16 @@ Entity *player_new(Vector3D position)
     ent->jumpCount = 0;
     ent->scale = vector3d(1,1,1);
     ent->bounds = gfc_box(1,1,1,10,10,10);
-    ent->bigCircle = gfc_sphere(position.x, position.y, position.z, 100)
+    ent->bigCircle = gfc_sphere(position.x, position.y, position.z, 10000)
 ;    ent->color = gfc_color_from_vector4(vector4d(255,255,0,0));
     ent->tag = 0;
     ent->level = 0;
     ent->health = 5;
+    ent->fire =0;
+    ent->ice=0;
+    ent->bulk=0;
+    ent->electric=0;
+    ent->dark=0;
     return ent;
     
 }
@@ -98,60 +103,59 @@ void player_think(Entity *self)
         self->canJump = 1;
         self->jumpCount = 0;
     }
-    if (keys[SDL_SCANCODE_W])
-    {   
-        vector3d_add(self->position,self->position, camForward);
-        self->rotation.z = self->camRotate.z;  
-    }
-    if (keys[SDL_SCANCODE_S])
+    if(self->isFrozen == 0)
     {
-        vector3d_add(self->position,self->position,-camForward);
-        self->rotation.z = vector_angle(camForward.x, camForward.y) * GFC_DEGTORAD;  
-        
-    }
-    if (keys[SDL_SCANCODE_D])
-    {
-        vector3d_add(self->position,self->position, camRight); 
-        self->rotation.z = (vector_angle(camRight.x, camRight.y) + 180) * GFC_DEGTORAD;  
 
-    }
-    if (keys[SDL_SCANCODE_A])    
-    {
-        vector3d_add(self->position,self->position,-camRight);
-        self->rotation.z = vector_angle(camRight.x, camRight.y) * GFC_DEGTORAD;  
-
-    }
-    if (keys[SDL_SCANCODE_SPACE] && self->canJump && self->jumpCount == 0)
-    {
-        for (int i =0; i<1000; i++)
-        {
-            //vector3d_add(self->position,self->position,vector3d(0,0,.05));
-            self->position.z += .025;
-            
-        }
-        self->canJump = 0;
-        self->jumpCount ++;
-        slog("jump");
-    }
-    else if (!keys[SDL_SCANCODE_SPACE] && self->jumpCount == 1)
-    {
-        self->canJump = 1;
-    }
-    else if (keys[SDL_SCANCODE_SPACE] && self->jumpCount == 1 && self->canJump)
-    {
-        for (int i =0; i<1000; i++)
-        {
-            //self->rotation.x = .050;
-            self->position.z += .025;
-            //flip
-            //self->rotation.x += 10;
-            //vector3d_add(self->position,self->position,vector3d(0,0,.05));
-            //slog("doublejump");
-        }
-        self->canJump = 0;
-        self->jumpCount = 2;
-    }
     
+        if (keys[SDL_SCANCODE_W])
+        {   
+            vector3d_add(self->position,self->position, camForward);
+            self->rotation.z = self->camRotate.z;  
+        }
+        if (keys[SDL_SCANCODE_S])
+        {
+            vector3d_add(self->position,self->position,-camForward);
+            self->rotation.z = vector_angle(camForward.x, camForward.y) * GFC_DEGTORAD;  
+
+        }
+        if (keys[SDL_SCANCODE_D])
+        {
+            vector3d_add(self->position,self->position, camRight); 
+            self->rotation.z = (vector_angle(camRight.x, camRight.y) + 180) * GFC_DEGTORAD;  
+
+        }
+        if (keys[SDL_SCANCODE_A])    
+        {
+            vector3d_add(self->position,self->position,-camRight);
+            self->rotation.z = vector_angle(camRight.x, camRight.y) * GFC_DEGTORAD;  
+
+        }
+        if (keys[SDL_SCANCODE_SPACE] && self->canJump && self->jumpCount == 0)
+        {
+            for (int i =0; i<1000; i++)
+            {
+                //vector3d_add(self->position,self->position,vector3d(0,0,.05));
+                self->position.z += .025;
+
+            }
+            self->canJump = 0;
+            self->jumpCount ++;
+            slog("jump");
+        }
+        else if (!keys[SDL_SCANCODE_SPACE] && self->jumpCount == 1)
+        {
+            self->canJump = 1;
+        }
+        else if (keys[SDL_SCANCODE_SPACE] && self->jumpCount == 1 && self->canJump)
+        {
+            for (int i =0; i<1000; i++)
+            {
+                self->position.z += .025;
+            }
+            self->canJump = 0;
+            self->jumpCount = 2;
+        }
+    }
     
 
     if (keys[SDL_SCANCODE_Z])self->position.z -= 0.10;
@@ -163,6 +167,15 @@ void player_think(Entity *self)
         {
             self->scale.z = 1;
             self->squishBuffer =0;
+        }
+    }
+    if(self->isFrozen == 1)
+    {
+        self->frozenBuffer++;
+        if(self->frozenBuffer >= 3000)
+        {
+            self->frozenBuffer =0;
+            self->isFrozen =0;
         }
     }
 
@@ -206,24 +219,23 @@ void player_think(Entity *self)
 
     if(self->element == 4)
     {
-        if(self->position.z>0)
-        {
-            self->slamming =1;
-        }
-        else
-        {
-            self->slamming =0;
-        }
+        self->slamming = 1;
     }
-    
-    //player melee = e
-    if (keys[SDL_SCANCODE_E] && self->canAttack) 
+    else
     {
-        meleeAttack(self, shoot);
-        self->canAttack = 0;
+        self->slamming = 0;
     }
-    if (!keys[SDL_SCANCODE_E]) self->canAttack = 1;
     
+    if(self->isFrozen == 0)
+    {
+        //player melee = e
+        if (keys[SDL_SCANCODE_E] && self->canAttack) 
+        {
+            meleeAttack(self, shoot);
+            self->canAttack = 0;
+        }
+        if (!keys[SDL_SCANCODE_E]) self->canAttack = 1;
+    }
     //camera left and right movement
     if (keys[SDL_SCANCODE_RIGHT])self->camRotate.z -= 0.0050;
     if (keys[SDL_SCANCODE_LEFT])self->camRotate.z += 0.0050;
@@ -296,7 +308,7 @@ void meleeAttack(Entity *self, Vector3D direction)
     if(self->element == 1)
     {
         slog("shoot lightning");
-        lightning(self->position, direction);
+        lightning(self->position, direction, 1);
     }
 }
 

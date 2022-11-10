@@ -175,6 +175,31 @@ Entity * collisionCheck(Entity *col)
     return NULL;
 }
 
+Entity * getEnemy()
+{
+    int i;
+    for(i = 0; i < entity_manager.entity_count; i++)
+    {
+        if(entity_manager.entity_list[i].tag != 6)
+        {
+            continue;
+        }
+        if(entity_manager.entity_list[i].shocked == 1)
+        {
+            continue;
+        }
+        if(gfc_point_in_sphere(entity_manager.entity_list[i].position, getPlayer()->bigCircle))
+        {
+            return &entity_manager.entity_list[i]; 
+        }
+        else
+        {
+            continue;
+        }
+    }
+    return NULL;
+}
+
 Entity *getPlayer()
 {
     int i;

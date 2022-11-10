@@ -43,6 +43,13 @@ void iceshard_think(Entity *self)
     if(!self)return;
     
     self->circle = gfc_sphere(self->position.x, self->position.y, self->position.z, 3);
+
+    if(gfc_point_in_sphere(getPlayer()->position, self->circle)&& self->team == 2 && getPlayer()->isFrozen ==0)
+    {
+        getPlayer()->isFrozen = 1;
+        entity_free(self);
+        return;
+    }
     
     collider = collisionCheck(self);
     if(collider != NULL && self->team == 1)

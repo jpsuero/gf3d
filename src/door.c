@@ -92,7 +92,7 @@ void door_think(Entity *self)
                 world_load("config/testworld5.json");
                 getPlayer()->position = vector3d(0,0,0);
                 level5();
-                slog("player colliding door 4");
+                slog("player colliding door 5");
                 break;
 
             }

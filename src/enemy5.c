@@ -17,7 +17,7 @@ Entity *enemy5_new(Vector3D position, int tag)
         return NULL;
     }
     
-    ent->model = gf3d_model_load("cube3");
+    ent->model = gf3d_model_load("cube5");
     ent->think = enemy5_think;
     ent->update = enemy5_update;
     vector3d_copy(ent->position,position);
@@ -44,7 +44,7 @@ void enemy5_think(Entity *self)
     direction.y = target.y - self->position.y;
     vector2d_set_magnitude(&direction,.4);
 
-    if(getPlayer()->level != 4)entity_free(self);
+    if(getPlayer()->level != 5)entity_free(self);
 
     self->shootBuffer++;
     if(self->shootBuffer == 10 && self->isFrozen == 0)
@@ -52,6 +52,21 @@ void enemy5_think(Entity *self)
         iceshard(self->position, vector3d(direction.x, direction.y, 0), 2);
     }
     if(self->shootBuffer > 5000)self->shootBuffer =0;
+
+
+    if(self->shocked == 1)
+    {
+        self->scale.x +=.01;
+        self->scale.y +=.01;
+        self->scale.z +=.01;
+        self->rotation.x += .050;
+        self->rotation.y += .050;
+        self->rotation.z += .050;
+        if(self->scale.z > 20)
+        {
+            entity_free(self);
+        }
+    }
 
 }
 

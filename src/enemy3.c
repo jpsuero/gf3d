@@ -1,6 +1,7 @@
 #include "simple_logger.h"
 #include "gfc_types.h"
 #include "enemy3.h"
+#include "lightning.h"
 
 void enemy3_think(Entity *self);
 void enemy3_update(Entity *self);
@@ -32,9 +33,10 @@ void enemy3_think(Entity *self)
 {
     if(!self)return;
 
+
     if(getPlayer()->level != 3)entity_free(self);
 
-    if(self->isFrozen == 0)
+    if(self->isFrozen == 0  && self->shocked ==0)
     {
         if(self->position.z >= 150)
         {
@@ -68,6 +70,19 @@ void enemy3_think(Entity *self)
         return;
     }
 
+    if(self->shocked == 1)
+    {
+        self->scale.x +=.01;
+        self->scale.y +=.01;
+        self->scale.z +=.01;
+        self->rotation.x += .050;
+        self->rotation.y += .050;
+        self->rotation.z += .050;
+        if(self->scale.z > 20)
+        {
+            entity_free(self);
+        }
+    }
 
 }
 

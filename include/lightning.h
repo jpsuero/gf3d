@@ -9,7 +9,7 @@
  * @param direction where to shoot at
  * @return NULL on error, or an lightning entity pointer on success
  */
-Entity *lightning(Vector3D position, Vector3D direction);
+Entity *lightning(Vector3D position, Vector3D direction, int team);
 
 
 #endif

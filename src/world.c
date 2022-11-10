@@ -8,6 +8,7 @@
 
 #include "enemy3.h"
 #include "enemy4.h"
+#include "enemy5.h"
 /*
 typedef struct
 {

@@ -42,7 +42,24 @@ typedef struct Entity_S
     int         frozenBuffer;
     int         slamming;
     int         isFrozen;
+
+    int         fire;
+    int         ice;
+    int         bulk;
+    int         dark;
+    int         electric;
+    int         fireKill;
+    int         iceKill;
+    int         morphKill;
+    int         darkKill;
+    int         electricKill;
+    int         darkElement;
+    int         fireElement;
+    int         electricElement;
+    int         morphElement;
+    int         iceElement;
     
+    int         speed;
     int         health;     /**<entity dies when it reaches zero*/
     // WHATEVER ELSE WE MIGHT NEED FOR ENTITIES
     int         element; /*current element for player*/
@@ -53,6 +70,7 @@ typedef struct Entity_S
     int         lifespan;
     int         isColliding;
     int         inVoid;
+    int         shocked;
     int         level;
     int         tag; /*1 for player, 2 for enemies, 3 for platforms, 4 for projectiles*/
     int         team;
@@ -114,6 +132,7 @@ void entity_update_all();
  */
 Entity *collisionCheck(Entity *col);
 Entity *getPlayer();
+Entity *getEnemy();
 
 
 #endif

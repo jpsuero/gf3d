@@ -9,7 +9,7 @@ void lightning_think(Entity *self);
 void lightning_update(Entity *self);
 
 
-Entity *lightning(Vector3D position,  Vector3D direction)
+Entity *lightning(Vector3D position,  Vector3D direction, int team)
 {
     Entity *ent = NULL;
     ent = entity_new();
@@ -25,6 +25,7 @@ Entity *lightning(Vector3D position,  Vector3D direction)
     vector3d_copy(ent->position,position);
     vector3d_copy(ent->velocity,direction);
     ent->scale = vector3d(.5,.5,.5);
+    ent->team = team;
     return ent;
 }
 
@@ -49,9 +50,7 @@ void lightning_think(Entity *self)
     {
         if(collider->tag == 6)
         {
-            collider->position = vector3d(0, 0, 15);
-            collider->inVoid = 1;
-            collider->isFrozen = 1;
+            collider->shocked =1;
             entity_free(self);
         }
     }

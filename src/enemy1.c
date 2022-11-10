@@ -1,6 +1,7 @@
 #include "simple_logger.h"
 #include "gfc_types.h"
 #include "enemy1.h"
+#include "lightning.h"
 
 void enemy1_think(Entity *self);
 void enemy1_update(Entity *self);
@@ -9,6 +10,7 @@ void enemy1_update(Entity *self);
 Entity *enemy1_new(Vector3D position, int tag)
 {
     Entity *ent = NULL;
+    
     ent = entity_new();
     if (!ent)
     {
@@ -31,7 +33,6 @@ Entity *enemy1_new(Vector3D position, int tag)
 
 void enemy1_think(Entity *self)
 {
-    
 
     if(getPlayer()->level != 1)entity_free(self);
 
@@ -39,7 +40,7 @@ void enemy1_think(Entity *self)
     Vector3D target = getPlayer()->position;
     direction.x = target.x - self->position.x;
     direction.y = target.y - self->position.y;
-    if(self->isFrozen == 0)
+    if(self->isFrozen == 0 && self->shocked ==0)
     {
         vector2d_set_magnitude(&direction,.1);
         self->velocity = vector3d(direction.x, direction.y, 0);
@@ -69,6 +70,20 @@ void enemy1_think(Entity *self)
             self->scale.z = .5;
         }
         
+    }
+
+    if(self->shocked == 1)
+    {
+        self->scale.x +=.01;
+        self->scale.y +=.01;
+        self->scale.z +=.01;
+        self->rotation.x += .050;
+        self->rotation.y += .050;
+        self->rotation.z += .050;
+        if(self->scale.z > 20)
+        {
+            entity_free(self);
+        }
     }
 
     //vector3d_move_towards(&self->velocity, self->position, target, 1);

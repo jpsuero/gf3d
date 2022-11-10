@@ -6,7 +6,7 @@ void enemy1_think(Entity *self);
 void enemy1_update(Entity *self);
 
 
-Entity *enemy1_new(Vector3D position)
+Entity *enemy1_new(Vector3D position, int tag)
 {
     Entity *ent = NULL;
     ent = entity_new();
@@ -22,23 +22,58 @@ Entity *enemy1_new(Vector3D position)
     vector3d_copy(ent->position,position);
     //vector3d_copy(ent->velocity,direction);
     ent->scale = vector3d(3,3,3);
-    ent->tag = 2;
-    ent->circle = gfc_sphere(position.x,position.y,position.z, 3);
+    ent->tag = tag;
+    ent->isFrozen = 0;
+    ent->inVoid = 0;
     return ent;
 }
 
 
 void enemy1_think(Entity *self)
 {
-    self->rotation.x += .0050;
-    self->rotation.y += .0050;
-    self->rotation.z += .0050;
+    
 
-    if(self->lifespan > 10000)
+    if(getPlayer()->level != 1)entity_free(self);
+
+    Vector2D direction;
+    Vector3D target = getPlayer()->position;
+    direction.x = target.x - self->position.x;
+    direction.y = target.y - self->position.y;
+    if(self->isFrozen == 0)
     {
-        entity_free(self);
+        vector2d_set_magnitude(&direction,.1);
+        self->velocity = vector3d(direction.x, direction.y, 0);
+        self->rotation.x += .0050;
+        self->rotation.y += .0050;
+        self->rotation.z += .0050;
+        
     }
-    //vector3d_add(self->position,self->position, self->velocity);
+    else
+    {   
+        vector2d_set_magnitude(&direction,0);
+        self->velocity = vector3d(direction.x, direction.y, 0);
+    }
+    self->circle = gfc_sphere(self->position.x, self->position.y,self->position.z, 5);
+
+
+    if(gfc_point_in_sphere(getPlayer()->position, self->circle))
+    {
+        if(getPlayer()->slamming== 0)
+        {
+            entity_free(self);
+            getPlayer()->health--;
+        }
+        else
+        {
+            self->isFrozen=1;
+            self->scale.z = .5;
+        }
+        
+    }
+
+    //vector3d_move_towards(&self->velocity, self->position, target, 1);
+    
+    //vector3d_add(self->position,self->position, target->position);
     
     /*if(gfc_point_in_sphere(getPlayer()->position, self->circle))
     {

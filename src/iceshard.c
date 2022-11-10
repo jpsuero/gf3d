@@ -9,7 +9,7 @@ void iceshard_think(Entity *self);
 void iceshard_update(Entity *self);
 
 
-Entity *iceshard(Vector3D position,  Vector3D direction)
+Entity *iceshard(Vector3D position,  Vector3D direction, int team)
 {
     Entity *ent = NULL;
     ent = entity_new();
@@ -25,14 +25,16 @@ Entity *iceshard(Vector3D position,  Vector3D direction)
     vector3d_copy(ent->position,position);
     vector3d_copy(ent->velocity,direction);
     ent->scale = vector3d(.5,.5,.5);
-    //ent->bounds = gfc_box(1,1,1,3,3,3);
-    ent->tag = 6;
+    ent->team = team;
     return ent;
 }
 
 
 void iceshard_think(Entity *self)
 {
+    Entity * collider = NULL;
+    if (!self)return;
+    
     self->lifespan++;
     self->rotation.x += .0050;
     self->rotation.y += .0050;
@@ -40,15 +42,19 @@ void iceshard_think(Entity *self)
 
     if(!self)return;
     
+    self->circle = gfc_sphere(self->position.x, self->position.y, self->position.z, 3);
     
-    /*Entity *col = collisionCheck(self);
-    if(col->tag == 2)
+    collider = collisionCheck(self);
+    if(collider != NULL && self->team == 1)
     {
-        col--;
-        entity_free(self);
-    }*/
+        if(collider->tag == 6)
+        {
+            collider->isFrozen = 1;
+            entity_free(self);
+        }
+    }
 
-    if(self->lifespan > 10000)
+    if(self->lifespan > 5000)
     {
         entity_free(self);
     }

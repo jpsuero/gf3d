@@ -32,20 +32,30 @@ typedef struct Entity_S
 
     Box         bounds;     //for collisions
     Sphere      circle;
+    Sphere      bigCircle;
 
+    int         down;
     int         isGrounded;
     int         hasGravity;
+    int         shootBuffer;
+    int         squishBuffer;
+    int         frozenBuffer;
+    int         slamming;
+    int         isFrozen;
     
-    Uint32      health;     /**<entity dies when it reaches zero*/
+    int         health;     /**<entity dies when it reaches zero*/
     // WHATEVER ELSE WE MIGHT NEED FOR ENTITIES
     int         element; /*current element for player*/
     int         canJump;
     int         jumpCount;
     int         canAttack;
+    int         enemyCount;
     int         lifespan;
     int         isColliding;
+    int         inVoid;
     int         level;
     int         tag; /*1 for player, 2 for enemies, 3 for platforms, 4 for projectiles*/
+    int         team;
     int         gateway; /*0-4 for each different gateway*/ 
     struct Entity_S *target;    /**<entity to target for weapons / ai*/
     
@@ -103,7 +113,7 @@ void entity_update_all();
  * @param col entity in question
  */
 Entity *collisionCheck(Entity *col);
-
 Entity *getPlayer();
+
 
 #endif

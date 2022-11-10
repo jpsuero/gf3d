@@ -9,7 +9,7 @@
  * @param direction where to shoot at
  * @return NULL on error, or an iceshard entity pointer on success
  */
-Entity *iceshard(Vector3D position, Vector3D direction);
+Entity *iceshard(Vector3D position, Vector3D direction, int team);
 
 
 #endif

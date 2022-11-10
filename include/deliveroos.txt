@@ -1,0 +1,8 @@
+
+    Basic platformer move set (dub jump, e, )
+       - 5 different things they can do
+    5 aspects to earn that give variations on those moves sets
+    5 enemies to fight
+    5 items to pick up
+    World Interactables
+       - switch, door, breakables, etc

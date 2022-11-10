@@ -1,5 +1,5 @@
-#ifndef __ENEMY1_H__
-#define __ENEMY1_H__
+#ifndef __ENEMY3_H__
+#define __ENEMY3_H__
 
 #include "entity.h"
 
@@ -9,44 +9,6 @@
  * @param tag to identify enemy
  * @return NULL on error, or an enemy entity pointer on success
  */
-Entity *enemy1_new(Vector3D position, int tag);
+Entity *enemy3_new(Vector3D position, int tag);
 
 #endif 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

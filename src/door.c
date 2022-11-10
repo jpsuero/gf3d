@@ -47,6 +47,8 @@ void door_think(Entity *self)
                 getPlayer()->level = 1;
                 world_delete(getLevel());
                 world_load("config/testworld1.json");
+                getPlayer()->position = vector3d(0,0,0);
+                level1();
                 slog("player colliding door 1");
                 break;
             }
@@ -55,20 +57,41 @@ void door_think(Entity *self)
                 getPlayer()->level = 2;
                 world_delete(getLevel());
                 world_load("config/testworld2.json");
+                getPlayer()->position = vector3d(0,0,0);
+                level2();
                 slog("player colliding door 2");
                 break;
 
             }
             case 3:
             {
-                //getPlayer()->level = 3;
+                getPlayer()->level = 3;
+                world_delete(getLevel());
+                world_load("config/testworld3.json");
+                getPlayer()->position = vector3d(0,0,0);
+                level3();
                 slog("player colliding door 3");
                 break;
 
             }
             case 4:
             {
-                //getPlayer()->level = 4;
+                getPlayer()->level = 4;
+                world_delete(getLevel());
+                world_load("config/testworld4.json");
+                getPlayer()->position = vector3d(0,0,0);
+                level4();
+                slog("player colliding door 4");
+                break;
+
+            }
+            case 5:
+            {
+                getPlayer()->level = 5;
+                world_delete(getLevel());
+                world_load("config/testworld5.json");
+                getPlayer()->position = vector3d(0,0,0);
+                level5();
                 slog("player colliding door 4");
                 break;
 

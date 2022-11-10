@@ -3,6 +3,7 @@
 
 //#include "gf3d_camera.h"
 #include "lightning.h"
+#include "entity.h"
 
 void lightning_think(Entity *self);
 void lightning_update(Entity *self);
@@ -24,22 +25,37 @@ Entity *lightning(Vector3D position,  Vector3D direction)
     vector3d_copy(ent->position,position);
     vector3d_copy(ent->velocity,direction);
     ent->scale = vector3d(.5,.5,.5);
-    ent->tag = 6;
     return ent;
 }
 
 
 void lightning_think(Entity *self)
 {
+    Entity * collider = NULL;
+    if (!self)return;
+    
     self->lifespan++;
     self->rotation.x += .0050;
     self->rotation.y += .0050;
     self->rotation.z += .0050;
 
-    if(self->lifespan > 10000)
+    if(self->lifespan > 5000)
     {
         entity_free(self);
     }
+
+    collider = collisionCheck(self);
+    if(collider != NULL && self->team == 1)
+    {
+        if(collider->tag == 6)
+        {
+            collider->position = vector3d(0, 0, 15);
+            collider->inVoid = 1;
+            collider->isFrozen = 1;
+            entity_free(self);
+        }
+    }
+
     //vector3d_add(self->position,self->position, self->velocity);
 }
 

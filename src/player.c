@@ -14,6 +14,7 @@
 void player_think(Entity *self);
 void player_update(Entity *self);
 void meleeAttack(Entity *self, Vector3D direction);
+void slam(Entity *self);
 
 
 Entity *player_new(Vector3D position)
@@ -33,12 +34,13 @@ Entity *player_new(Vector3D position)
     ent->camRotate.x = M_PI;
     ent->rotation.x = -M_PI;
     ent->rotation.y = -M_PI;
-    ent->gravity = vector3d(0, 0, -.03);
+    ent->gravity = vector3d(0, 0, -.05);
     ent->canJump = 1;
     ent->jumpCount = 0;
     ent->scale = vector3d(1,1,1);
     ent->bounds = gfc_box(1,1,1,10,10,10);
-    ent->color = gfc_color_from_vector4(vector4d(255,255,0,0));
+    ent->bigCircle = gfc_sphere(position.x, position.y, position.z, 100)
+;    ent->color = gfc_color_from_vector4(vector4d(255,255,0,0));
     ent->tag = 0;
     ent->level = 0;
     ent->health = 5;
@@ -77,6 +79,16 @@ void player_think(Entity *self)
     vector3d_set_magnitude(&camForward,0.15);
     vector3d_set_magnitude(&camRight,0.15);
     //CONSTANT GRAVITY
+
+    if(self->slamming ==1)
+    {
+        self->gravity = vector3d(0,0,-.1);
+    }
+    else
+    {
+        self->gravity = vector3d(0,0,-.05);
+    }
+
     if(self->position.z > 0)
     {
         vector3d_add(self->position,self->position, self->gravity);
@@ -144,41 +156,65 @@ void player_think(Entity *self)
 
     if (keys[SDL_SCANCODE_Z])self->position.z -= 0.10;
 
+    if(self->scale.z == .5)
+    {
+        self->squishBuffer++;
+        if(self->squishBuffer >= 3000)
+        {
+            self->scale.z = 1;
+            self->squishBuffer =0;
+        }
+    }
+
     //element changer
     if (keys[SDL_SCANCODE_6])
     {
         self->element = 0;
         gf3d_model_free(self->model);
         self->model = gf3d_model_load("dino");
+        self->scale = vector3d(1,1,1);
     }
     if (keys[SDL_SCANCODE_7])
     {
         self->element = 1;
         gf3d_model_free(self->model);
         self->model = gf3d_model_load("dino1");
+        self->scale = vector3d(1,1,1);
     }
     if (keys[SDL_SCANCODE_8])
     {
         self->element = 2;
         gf3d_model_free(self->model);
         self->model = gf3d_model_load("dino2");
+        self->scale = vector3d(1,1,1);
+
     }
     if (keys[SDL_SCANCODE_9])
     {
         self->element = 3;
         gf3d_model_free(self->model);
         self->model = gf3d_model_load("dino3");
+        self->scale = vector3d(1,1,1);
     }
     if (keys[SDL_SCANCODE_0])
     {
         self->element = 4;
         gf3d_model_free(self->model);
         self->model = gf3d_model_load("dino4");
+        self->scale = vector3d(3,3,3);
     }
 
-    //
-    
-
+    if(self->element == 4)
+    {
+        if(self->position.z>0)
+        {
+            self->slamming =1;
+        }
+        else
+        {
+            self->slamming =0;
+        }
+    }
     
     //player melee = e
     if (keys[SDL_SCANCODE_E] && self->canAttack) 
@@ -187,17 +223,6 @@ void player_think(Entity *self)
         self->canAttack = 0;
     }
     if (!keys[SDL_SCANCODE_E]) self->canAttack = 1;
-    //player heavy = q
-    //if (keys[SDL_SCANCODE_E]) ultAttack(self);
-
-    
-    //player rotation testing
-    //if (keys[SDL_SCANCODE_Q])self->rotation.z -= 0.0050;
-    //if (keys[SDL_SCANCODE_E])self->rotation.z += 0.0050;
-    
-    //camera pitch movement not needed
-    //if (keys[SDL_SCANCODE_UP])self->camRotate.x -= 0.0050;
-    //if (keys[SDL_SCANCODE_DOWN])self->camRotate.x += 0.0050;    
     
     //camera left and right movement
     if (keys[SDL_SCANCODE_RIGHT])self->camRotate.z -= 0.0050;
@@ -226,8 +251,17 @@ void player_update(Entity *self)
     
     vector3d_copy(position,self->position);
     vector3d_copy(rotation,self->camRotate);
-        position.z += 30;
-        rotation.x += M_PI*0.020;
+        if(self->element != 4)
+        {
+            position.z += 30;
+            rotation.x += M_PI*0.020;
+        }
+        else
+        {
+            position.z += 50;
+            rotation.x += M_PI*0.030;
+        }
+        
         w = vector2d_from_angle(self->camRotate.z);
         forward.x = w.x * 100;
         forward.y = w.y * 100;
@@ -236,12 +270,6 @@ void player_update(Entity *self)
  
     gf3d_camera_set_position(vector3d(position.x, position.y, 30));
     gf3d_camera_set_rotation(rotation);  
-
-    Entity *col = collisionCheck(self);
-    if(col)
-    {
-        slog("is colliding");
-    }   
     
 }
 
@@ -250,19 +278,19 @@ void meleeAttack(Entity *self, Vector3D direction)
     if(self->element == 2)
     {
         slog("shoot fireball");
-        fireball(self->position, direction);
+        fireball(self->position, direction, 1);
     }
 
     if(self->element == 0)
     {
         slog("shoot iceshard");
-        iceshard(self->position, direction);
+        iceshard(self->position, direction, 1);
     }
 
     if(self->element == 3)
     {
         slog("shoot hypnobeam");
-        hypnobeam(self->position, direction);
+        hypnobeam(self->position, direction, 1);
     }
 
     if(self->element == 1)
@@ -270,12 +298,8 @@ void meleeAttack(Entity *self, Vector3D direction)
         slog("shoot lightning");
         lightning(self->position, direction);
     }
-
-    /*if(self->element == 5)
-    {
-        wind_shove();
-    }*/
 }
+
 
 
 

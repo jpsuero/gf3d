@@ -7,9 +7,10 @@
  * @brief Create a new hypno entity
  * @param position where to spawn the hypno at
  * @param direction where to shoot at
+ * @param team projectile team
  * @return NULL on error, or an hypno entity pointer on success
  */
-Entity *hypnobeam(Vector3D position, Vector3D direction);
+Entity *hypnobeam(Vector3D position, Vector3D direction, int team);
 
 
 #endif

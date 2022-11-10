@@ -126,6 +126,7 @@ void entity_update(Entity *self)
             self->position.y = 0;
         }
     }*/
+
     
     gfc_matrix_identity(self->modelMat);
     gfc_matrix_scale(self->modelMat,self->scale);
@@ -153,22 +154,25 @@ void entity_update_all()
 }
 
 
-Entity *collisionCheck(Entity *col)
+Entity * collisionCheck(Entity *col)
 {
     int i;
     for(i = 0; i < entity_manager.entity_count; i++)
     {
+        if(entity_manager.entity_list[i].tag == 0)
+        {
+            continue;
+        }
         if(gfc_point_in_sphere(col->position, entity_manager.entity_list[i].circle))
         {
-            slog("colliding");
-            return &entity_manager.entity_list[i];
+            return &entity_manager.entity_list[i]; 
         }
         else
         {
-            //slog("not colliding");
+            continue;
         }
-        return NULL;
     }
+    return NULL;
 }
 
 Entity *getPlayer()
@@ -181,12 +185,9 @@ Entity *getPlayer()
             
             return &entity_manager.entity_list[i];
         }
-        else
-        {
-            //slog("not colliding");
-        }
-        return NULL;
+        
     }
+    return NULL;
 }
 
 Entity *getWorld()
@@ -203,8 +204,9 @@ Entity *getWorld()
         {
             //slog("not colliding");
         }
-        return NULL;
     }
+    return NULL;
 }
+
 
 /*eol@eof*/

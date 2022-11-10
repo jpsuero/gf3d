@@ -3,7 +3,11 @@
 #include "gfc_types.h"
 
 #include "world.h"
+#include "enemy1.h"
+#include "enemy2.h"
 
+#include "enemy3.h"
+#include "enemy4.h"
 /*
 typedef struct
 {
@@ -86,6 +90,46 @@ void world_add_entity(World *world,Entity *entity);
 World *getLevel()
 {
     return currentLevel;
+}
+
+void level1()
+{
+    enemy1_new(vector3d(-200,200,0), 6);
+    enemy1_new(vector3d(200,200,0), 6);
+    enemy1_new(vector3d(-200,-200,0), 6);
+    enemy1_new(vector3d(200,-200,0), 6);
+
+}
+void level2()
+{
+    enemy2_new(vector3d(-200,200,0), 6);
+    enemy2_new(vector3d(200,200,0), 6);
+    enemy2_new(vector3d(-200,-200,0), 6);
+    enemy2_new(vector3d(200,-200,0), 6);
+
+}
+void level3()
+{
+    enemy3_new(vector3d(-200,200,0), 6);
+    enemy3_new(vector3d(200,200,0), 6);
+    enemy3_new(vector3d(-200,-200,0), 6);
+    enemy3_new(vector3d(100,-200,0), 6);
+
+}
+void level4()
+{
+    enemy4_new(vector3d(-200,200,0), 6);
+    enemy4_new(vector3d(200,200,0), 6);
+    enemy4_new(vector3d(-200,-200,0), 6);
+    enemy4_new(vector3d(100,-200,0), 6);
+}
+void level5()
+{
+    enemy5_new(vector3d(-200,200,0), 6);
+    enemy5_new(vector3d(200,200,0), 6);
+    enemy5_new(vector3d(-200,-200,0), 6);
+    enemy5_new(vector3d(100,-200,0), 6);
+
 }
 
 

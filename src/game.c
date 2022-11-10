@@ -72,7 +72,6 @@ int main(int argc,char *argv[])
     door3->tag =3;
     Entity *door4 = door_new(vector3d(0, -150, 0), 4);
     door4->tag =4;
-    enemy1_new(vector3d(50,50,0));
      
     //player scale up
     
@@ -85,7 +84,6 @@ int main(int argc,char *argv[])
         SDL_GetMouseState(&mousex,&mousey);
         
         
-
         mouseFrame += 0.01;
         if (mouseFrame >= 16)mouseFrame = 0;
         entity_think_all();
@@ -94,27 +92,39 @@ int main(int argc,char *argv[])
         gf3d_camera_get_view_mat4(gf3d_vgraphics_get_view_matrix());
 
         //level changer
-        //if(player)
-        //{
-        //    switch(player->level)
-        //    {
-        //        case 1:
-        //        {
-        //            world_delete(w);
-        //            w = world_load("config/testworld1.json");
-        //            slog("level changed");
-        //            break;
-        //        }
-        //        case 2:
-        //        {
-        //            world_delete(w);
-        //            w = world_load("config/testworld2.json");
-        //            break;
-        //        }
-        //    }
-        //}
-        
-    
+        //uichanger
+        if(player)
+        {
+            switch(player->element)
+            {
+                case 0:
+                {
+                    element = gf3d_sprite_load("images/ice.png", 1920,1080, 1);
+                    break;
+                }
+                case 2:
+                {
+                    element = gf3d_sprite_load("images/fire.png", 1920,1080, 1);
+                    break;
+                }
+                case 3:
+                {
+                    element = gf3d_sprite_load("images/void.png", 1920,1080, 1);
+                    break;
+                }
+                case 4:
+                {
+                    element = gf3d_sprite_load("images/wind.png", 1920,1080, 1);
+                    break;
+                }
+                case 1:
+                {
+                    element = gf3d_sprite_load("images/lightning.png", 1920,1080, 1);
+                    break;
+                }
+            }
+        }
+
         //out of bounds
         if(player->position.x < -241)player->position.x += .5;
         if(player->position.x > 241)player->position.x -= .5;
@@ -122,7 +132,6 @@ int main(int argc,char *argv[])
         if(player->position.y < -241)player->position.y += .5;
     
         if(player->position.y > 241)player->position.y -= .5;
-
 
         // configure render command for graphics command pool
         // for each mesh, get a command and configure it from the pool
@@ -137,7 +146,7 @@ int main(int argc,char *argv[])
         
         gf3d_vgraphics_render_end();
 
-        if (gfc_input_command_down("exit"))done = 1; // exit condition
+        if (gfc_input_command_down("exit") || player->health<=0)done = 1; // exit condition
     }    
     
     world_delete(w);
@@ -148,6 +157,8 @@ int main(int argc,char *argv[])
     slog_sync();
     return 0;
 }
+
+
 
 
 /*eol@eof*/

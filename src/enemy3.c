@@ -31,10 +31,13 @@ Entity *enemy3_new(Vector3D position, int tag)
 
 void enemy3_think(Entity *self)
 {
+    Entity *player = getPlayer();
+    
     if(!self)return;
-
-
-    if(getPlayer()->level != 3)entity_free(self);
+    
+    if(!player)return;
+    
+    if(player->level != 3)entity_free(self);
 
     if(self->isFrozen == 0  && self->shocked ==0)
     {
@@ -62,10 +65,10 @@ void enemy3_think(Entity *self)
     self->circle = gfc_sphere(self->position.x, self->position.y,self->position.z, 10);
 
 
-    if(gfc_point_in_sphere(getPlayer()->position, self->circle))
+    if(gfc_point_in_sphere(player->position, self->circle))
     {
-        getPlayer()->scale.z = .5;
-        getPlayer()->health--;
+        player->isSquished = 1;
+        player->health--;
         entity_free(self);
         return;
     }

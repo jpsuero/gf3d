@@ -14,7 +14,6 @@
 void player_think(Entity *self);
 void player_update(Entity *self);
 void meleeAttack(Entity *self, Vector3D direction);
-void slam(Entity *self);
 
 
 Entity *player_new(Vector3D position)
@@ -26,7 +25,6 @@ Entity *player_new(Vector3D position)
         slog("UGH OHHHH, no player for you!");
         return NULL;
     }
-    
     ent->model = gf3d_model_load("dino");
     ent->think = player_think;
     ent->update = player_update;
@@ -34,16 +32,17 @@ Entity *player_new(Vector3D position)
     ent->camRotate.x = M_PI;
     ent->rotation.x = -M_PI;
     ent->rotation.y = -M_PI;
+    ent->rotation.z = GFC_HALF_PI;
     ent->gravity = vector3d(0, 0, -.05);
     ent->canJump = 1;
     ent->jumpCount = 0;
     ent->scale = vector3d(1,1,1);
     ent->bounds = gfc_box(1,1,1,10,10,10);
-    ent->bigCircle = gfc_sphere(position.x, position.y, position.z, 10000)
-;    ent->color = gfc_color_from_vector4(vector4d(255,255,0,0));
+    ent->bigCircle = gfc_sphere(position.x, position.y, position.z, 10000);
+    ent->color = gfc_color_from_vector4(vector4d(255,255,0,0));
     ent->tag = 0;
     ent->level = 0;
-    ent->health = 5;
+    ent->health = 10;
     ent->fire =0;
     ent->ice=0;
     ent->bulk=0;
@@ -160,12 +159,14 @@ void player_think(Entity *self)
 
     if (keys[SDL_SCANCODE_Z])self->position.z -= 0.10;
 
-    if(self->scale.z == .5)
+    if(self->isSquished)
     {
+        self->scale.z = .5;
         self->squishBuffer++;
         if(self->squishBuffer >= 3000)
         {
             self->scale.z = 1;
+            self->isSquished = 0;
             self->squishBuffer =0;
         }
     }

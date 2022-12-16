@@ -114,7 +114,7 @@ void level3()
     enemy3_new(vector3d(-200,200,0), 6);
     enemy3_new(vector3d(200,200,0), 6);
     enemy3_new(vector3d(-200,-200,0), 6);
-    enemy3_new(vector3d(100,-200,0), 6);
+    enemy3_new(vector3d(200,-200,0), 6);
 
 }
 void level4()
@@ -122,14 +122,14 @@ void level4()
     enemy4_new(vector3d(-200,200,0), 6);
     enemy4_new(vector3d(200,200,0), 6);
     enemy4_new(vector3d(-200,-200,0), 6);
-    enemy4_new(vector3d(100,-200,0), 6);
+    enemy4_new(vector3d(200,-200,0), 6);
 }
 void level5()
 {
     enemy5_new(vector3d(-200,200,0), 6);
     enemy5_new(vector3d(200,200,0), 6);
     enemy5_new(vector3d(-200,-200,0), 6);
-    enemy5_new(vector3d(100,-200,0), 6);
+    enemy5_new(vector3d(200,-200,0), 6);
 
 }
 

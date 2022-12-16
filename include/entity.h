@@ -30,15 +30,16 @@ typedef struct Entity_S
     Vector3D    rotation;
     Vector3D    camRotate;
 
-    Box         bounds;     //for collisions
-    Sphere      circle;
-    Sphere      bigCircle;
+    Box         bounds;     /**Bounding box for collisions*/
+    Sphere      circle;     /**Bounding sphere for collisions*/
+    Sphere      bigCircle;  /**Use for big radius checks*/
 
     int         down;
     int         isGrounded;
     int         hasGravity;
     int         shootBuffer;
     int         squishBuffer;
+    int         isSquished;
     int         frozenBuffer;
     int         slamming;
     int         isFrozen;

@@ -25,6 +25,7 @@ Entity *fireball(Vector3D position, Vector3D direction, int team)
     vector3d_copy(ent->position,position);
     vector3d_copy(ent->velocity,direction);
     ent->scale = vector3d(.5,.5,.5);
+    ent->gravity = vector3d(0,0, 0);
     ent->team = team;
     return ent;
 }
@@ -33,6 +34,7 @@ Entity *fireball(Vector3D position, Vector3D direction, int team)
 void fireball_think(Entity *self)
 {
     Entity * collider = NULL;
+    Entity * player = getPlayer();
     if (!self)return;
 
     self->lifespan++;
@@ -42,16 +44,15 @@ void fireball_think(Entity *self)
 
     self->circle = gfc_sphere(self->position.x, self->position.y,self->position.z, 5);
 
-
     if(self->lifespan > 5000)
     {
         entity_free(self);
         return;
     }
 
-    if(gfc_point_in_sphere(getPlayer()->position, self->circle)&& self->team == 2)
+    if(gfc_point_in_sphere(player->position, self->circle)&& self->team == 2)
     {
-        getPlayer()->health--;
+        player->health--;
         entity_free(self);
         return;
     }
@@ -62,7 +63,7 @@ void fireball_think(Entity *self)
     {
         if(collider->tag == 6)
         {
-            switch(getPlayer()->level)
+            switch(player->level)
             {
                 case 1:
                 {

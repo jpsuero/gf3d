@@ -1,5 +1,5 @@
-#ifndef __ICEELEMENT_H__
-#define __ICEELEMENT_H__
+#ifndef __VOIDELEMENT_H__
+#define __VOIDELEMENT_H__
 
 #include "entity.h"
 
@@ -8,6 +8,6 @@
  * @param position where to spawn the enemy at
  * @return NULL on error, or an enemy entity pointer on success
  */
-Entity *ice_element_new(Vector3D position);
+Entity *void_element_new(Vector3D position);
 
 #endif 

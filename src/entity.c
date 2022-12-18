@@ -114,19 +114,6 @@ void entity_update(Entity *self)
     vector3d_add(self->position,self->position,self->velocity);
     vector3d_add(self->velocity,self->acceleration,self->velocity);
 
-    /*if(self->hasGravity)
-    {
-        if(!self->isGrounded)
-        {
-            self->acceleration.z = -.0025;
-        }
-        else
-        {
-            self->acceleration.z = 0;
-            self->position.y = 0;
-        }
-    }*/
-
     
     gfc_matrix_identity(self->modelMat);
     gfc_matrix_scale(self->modelMat,self->scale);
@@ -175,20 +162,17 @@ Entity * collisionCheck(Entity *col)
     return NULL;
 }
 
-Entity * getEnemy()
+
+Entity * groundCheck(Entity *col)
 {
     int i;
     for(i = 0; i < entity_manager.entity_count; i++)
     {
-        if(entity_manager.entity_list[i].tag != 6)
+        if(entity_manager.entity_list[i].tag == 0)
         {
             continue;
         }
-        if(entity_manager.entity_list[i].shocked == 1)
-        {
-            continue;
-        }
-        if(gfc_point_in_sphere(entity_manager.entity_list[i].position, getPlayer()->bigCircle))
+        if(gfc_box_overlap(col->bounds, entity_manager.entity_list[i].bounds))
         {
             return &entity_manager.entity_list[i]; 
         }

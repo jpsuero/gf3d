@@ -54,7 +54,7 @@ World *world_load(char *filename)
         gfc_matrix_identity(w->modelMat);
         gfc_matrix_scale(
             w->modelMat,
-            vector3d(10,10,1)
+            vector3d(10,50,1)
         );
         gfc_matrix_translate(
             w->modelMat,
@@ -132,6 +132,4 @@ void level5()
     enemy5_new(vector3d(200,-200,0), 6);
 
 }
-
-
 /*eol@eof*/

@@ -41,6 +41,8 @@ typedef struct Entity_S
     int         squishBuffer;
     int         isSquished;
     int         frozenBuffer;
+    int         isJumping;
+    int         jumpBuffer;
     int         slamming;
     int         isFrozen;
 
@@ -75,6 +77,7 @@ typedef struct Entity_S
     int         level;
     int         tag; /*1 for player, 2 for enemies, 3 for platforms, 4 for projectiles*/
     int         team;
+    int         platformType;
     int         gateway; /*0-4 for each different gateway*/ 
     struct Entity_S *target;    /**<entity to target for weapons / ai*/
     
@@ -132,8 +135,8 @@ void entity_update_all();
  * @param col entity in question
  */
 Entity *collisionCheck(Entity *col);
-Entity *getPlayer();
-Entity *getEnemy();
+Entity *groundCheck(Entity *col);
 
+Entity *getPlayer();
 
 #endif

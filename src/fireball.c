@@ -69,35 +69,35 @@ void fireball_think(Entity *self)
                 {
                     entity_free(collider);
                     entity_free(self);
-                    getPlayer()->electricKill++;
+                    player->electricKill++;
                     break;
                 }
                 case 2:
                 {
                     entity_free(collider);
                     entity_free(self);
-                    getPlayer()->fireKill++;
+                    player->fireKill++;
                     break;
                 }
                 case 3:
                 {
                     entity_free(collider);
                     entity_free(self);
-                    getPlayer()->morphKill++;
+                    player->morphKill++;
                     break;
                 }
                 case 4:
                 {
                     entity_free(collider);
                     entity_free(self);
-                    getPlayer()->darkKill++;
+                    player->darkKill++;
                     break;
                 }
                 case 5:
                 {
                     entity_free(collider);
                     entity_free(self);
-                    getPlayer()->iceKill++;
+                    player->iceKill++;
                     break;
                 }
         

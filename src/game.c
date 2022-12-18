@@ -23,6 +23,7 @@
 #include "gfc_audio.h"
 
 
+#include "platform.h"
 #include "entity.h"
 #include "agumon.h"
 #include "player.h"
@@ -34,6 +35,7 @@
 #include "electricElement.h"
 #include "voidElement.h"
 #include "morphElement.h"
+#define RAND_MAX = 2
 
 
 extern int __DEBUG;
@@ -83,16 +85,24 @@ int main(int argc,char *argv[])
     
     slog_sync();
     gf3d_camera_set_scale(vector3d(1,1,1));
-    Entity *player = player_new(vector3d(0,0,20));
-    Entity *door1 = door_new(vector3d(-150, 0, 0), 1);
+    Entity *player = player_new(vector3d(0,-50,10));
+    
+    for (int p=0; p<=30; p++)
+    {
+        platform_new(vector3d(0, 100*p, 0), 2);
+    }
+    
+    platform_new(vector3d(0,0,-20), 0);
+
+    Entity *door1 = door_new(vector3d(-150, 50, 0), 1);
     door1->tag =1;
-    Entity *door2 = door_new(vector3d(0, 150, 0), 2);
+    Entity *door2 = door_new(vector3d(-75, 100, 0), 2);
     door2->tag =2;
-    Entity *door3 = door_new(vector3d(150, 0, 0), 3);
+    Entity *door3 = door_new(vector3d(0, 150, 0), 3);
     door3->tag =3;
-    Entity *door4 = door_new(vector3d(0, -150, 0), 4);
+    Entity *door4 = door_new(vector3d(75, 100, 0), 4);
     door4->tag =4;
-    Entity *door5 = door_new(vector3d(150, -150, 0), 5);
+    Entity *door5 = door_new(vector3d(150, 50, 0), 5);
     door5->tag =5;
      
     //audio
@@ -126,8 +136,6 @@ int main(int argc,char *argv[])
             }
         }
 
-
-
         gfc_input_update();
         SDL_GetMouseState(&mousex,&mousey);
 
@@ -140,6 +148,8 @@ int main(int argc,char *argv[])
         if((SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) && startButtonCollide)
         {
             Mix_HaltMusic();
+            music = Mix_LoadMUS("music/japan_music.mp3");
+            Mix_PlayMusic(music, -1);
             done = 0;
             main = 0;
         }
@@ -159,7 +169,6 @@ int main(int argc,char *argv[])
         
         gf3d_vgraphics_render_end();
 
-
     }
     
 
@@ -176,9 +185,6 @@ int main(int argc,char *argv[])
         gf3d_camera_get_view_mat4(gf3d_vgraphics_get_view_matrix());
 
         
-        music = Mix_LoadMUS("music/japan_music.mp3");
-        Mix_PlayMusic(music, -1);
-
         //element dropper
         if(player)
         {
@@ -265,9 +271,9 @@ int main(int argc,char *argv[])
         if(player->position.x < -241)player->position.x += .5;
         if(player->position.x > 241)player->position.x -= .5;
     
-        if(player->position.y < -241)player->position.y += .5;
+        //if(player->position.y < -241)player->position.y += .5;
     
-        if(player->position.y > 241)player->position.y -= .5;
+        //if(player->position.y > 241)player->position.y -= .5;
 
         // configure render command for graphics command pool
         // for each mesh, get a command and configure it from the pool

@@ -15,6 +15,7 @@ typedef struct
     Model *worldModel;
     List *spawnList;        //entities to spawn
     List *entityList;       //entities that exist in the world
+    
 }World;
 
 World *world_load(char *filename);

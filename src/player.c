@@ -10,22 +10,35 @@
 #include "hypnobeam.h"
 #include "lightning.h"
 #include "entity.h"
+#include "gfc_audio.h"
 
 void player_think(Entity *self);
 void player_update(Entity *self);
 void meleeAttack(Entity *self, Vector3D direction);
-
+void addForce(Entity *self, Vector3D force);
+void jump(Entity *self, Vector3D force);
 
 Entity *player_new(Vector3D position)
 {
     Entity *ent = NULL;
+    const char * model = NULL;
+    int health = 5;
+
+
     ent = entity_new();
     if (!ent)
     {
         slog("UGH OHHHH, no player for you!");
         return NULL;
     }
-    ent->model = gf3d_model_load("dino");
+
+    SJson* json;
+	json = sj_load("config/player.json");
+    model = sj_get_string_value(sj_object_get_value(json,"model"));
+    sj_get_integer_value(sj_object_get_value(json, "health"), &health);
+
+
+    ent->model = gf3d_model_load((char *)model);
     ent->think = player_think;
     ent->update = player_update;
     vector3d_copy(ent->position,position);
@@ -33,16 +46,15 @@ Entity *player_new(Vector3D position)
     ent->rotation.x = -M_PI;
     ent->rotation.y = -M_PI;
     ent->rotation.z = GFC_HALF_PI;
-    ent->gravity = vector3d(0, 0, -.05);
+    ent->gravity = vector3d(0, 0, -.1);
     ent->canJump = 1;
     ent->jumpCount = 0;
     ent->scale = vector3d(1,1,1);
-    ent->bounds = gfc_box(1,1,1,10,10,10);
     ent->bigCircle = gfc_sphere(position.x, position.y, position.z, 10000);
     ent->color = gfc_color_from_vector4(vector4d(255,255,0,0));
     ent->tag = 0;
     ent->level = 0;
-    ent->health = 10;
+    ent->health = health;
     ent->fire =0;
     ent->ice=0;
     ent->bulk=0;
@@ -55,6 +67,7 @@ Entity *player_new(Vector3D position)
 
 void player_think(Entity *self)
 {
+    Entity *collider = NULL;
     Vector3D forward;
     Vector3D camForward = {0};
     Vector3D camRight = {0};
@@ -63,6 +76,8 @@ void player_think(Entity *self)
     Vector3D shoot;
     Vector2D j;
     Vector2D shootAngle;
+
+    Sound * boing = gfc_sound_load("music/jump.wav", .5, 0);
 
     shootAngle = vector2d_from_angle(self->rotation.z);
     shoot = vector3d(shootAngle.x, shootAngle.y, 0);
@@ -82,18 +97,32 @@ void player_think(Entity *self)
 
     vector3d_set_magnitude(&camForward,0.15);
     vector3d_set_magnitude(&camRight,0.15);
-    //CONSTANT GRAVITY
 
-    if(self->slamming ==1)
-    {
-        self->gravity = vector3d(0,0,-.1);
-    }
+    //player hitbox
+    self->bounds = gfc_box(self->position.x-5, self->position.y-5, self->position.z-5, 10, 10, 10);
+
+    //groundcheck
+    collider = groundCheck(self);
+    if(collider != NULL)
+        {
+            if(collider->tag ==3)
+            {
+                self->isGrounded =1;
+            }
+        }
     else
     {
-        self->gravity = vector3d(0,0,-.05);
+        self->isGrounded =0;
     }
 
-    if(self->position.z > 0)
+
+    if(keys[SDL_SCANCODE_Q])
+    {
+        self->position.z += 1;
+    }
+    
+    //gravity
+    if(self->isGrounded == 0)
     {
         vector3d_add(self->position,self->position, self->gravity);
     }
@@ -102,13 +131,27 @@ void player_think(Entity *self)
         self->canJump = 1;
         self->jumpCount = 0;
     }
+
+    //slam gravity
+    if(self->slamming ==1)
+    {
+        self->gravity = vector3d(0,0,-.1);
+    }
+    else
+    {
+        self->gravity = vector3d(0,0,-.05);
+    }
+    
+    
+    //player movement
     if(self->isFrozen == 0)
     {
 
     
         if (keys[SDL_SCANCODE_W])
         {   
-            vector3d_add(self->position,self->position, camForward);
+            addForce(self, camForward);
+            //vector3d_add(self->position,self->position, camForward);
             self->rotation.z = self->camRotate.z;  
         }
         if (keys[SDL_SCANCODE_S])
@@ -131,12 +174,14 @@ void player_think(Entity *self)
         }
         if (keys[SDL_SCANCODE_SPACE] && self->canJump && self->jumpCount == 0)
         {
-            for (int i =0; i<1000; i++)
-            {
-                //vector3d_add(self->position,self->position,vector3d(0,0,.05));
-                self->position.z += .025;
-
-            }
+            self->isJumping = 1;
+            gfc_sound_play(boing, 0, 10, -1, -1);
+            //old jump mechanics
+            //for (int i =0; i<1000; i++)
+            //{
+            //    //vector3d_add(self->position,self->position,vector3d(0,0,.05));
+            //    self->position.z += .025;
+            //}
             self->canJump = 0;
             self->jumpCount ++;
             slog("jump");
@@ -147,17 +192,31 @@ void player_think(Entity *self)
         }
         else if (keys[SDL_SCANCODE_SPACE] && self->jumpCount == 1 && self->canJump)
         {
-            for (int i =0; i<1000; i++)
-            {
-                self->position.z += .025;
-            }
+            self->isJumping = 1;
+            gfc_sound_play(boing, 0, 10, -1, -1);
+
+            ////old dub jump
+            //for (int i =0; i<1000; i++)
+            //{
+            //    self->position.z += .025;
+            //}
             self->canJump = 0;
             self->jumpCount = 2;
         }
     }
-    
 
-    if (keys[SDL_SCANCODE_Z])self->position.z -= 0.10;
+
+    if(self->isJumping)
+    {
+        self->position.z+=.25;
+        self->jumpBuffer++;
+        if(self->jumpBuffer >= 100)
+        {
+            self->isJumping =0;
+            self->jumpBuffer =0;
+        }
+    }
+    
 
     if(self->isSquished)
     {
@@ -238,15 +297,8 @@ void player_think(Entity *self)
         if (!keys[SDL_SCANCODE_E]) self->canAttack = 1;
     }
     //camera left and right movement
-    if (keys[SDL_SCANCODE_RIGHT])self->camRotate.z -= 0.0050;
-    if (keys[SDL_SCANCODE_LEFT])self->camRotate.z += 0.0050;
-    
-
-    //Entity *col = collisionCheck(self);
-    //if(col)
-    //{
-    //    slog("is colliding");
-    //}
+    if (keys[SDL_SCANCODE_RIGHT])self->camRotate.z -= 0.00250;
+    if (keys[SDL_SCANCODE_LEFT])self->camRotate.z += 0.00250;
 
 }
 
@@ -262,6 +314,8 @@ void player_update(Entity *self)
     
     if (!self)return;
     
+    
+
     vector3d_copy(position,self->position);
     vector3d_copy(rotation,self->camRotate);
         if(self->element != 4)
@@ -282,7 +336,7 @@ void player_update(Entity *self)
     
  
     gf3d_camera_set_position(vector3d(position.x, position.y, 30));
-    gf3d_camera_set_rotation(rotation);  
+    gf3d_camera_set_rotation(rotation);
     
 }
 
@@ -313,8 +367,20 @@ void meleeAttack(Entity *self, Vector3D direction)
     }
 }
 
+void addForce(Entity * ent, Vector3D force)
+{
+    ent->position.x += force.x;
+    ent->position.y += force.y;
+    ent->position.z += force.z;
+}
 
-
+void jump(Entity * ent, Vector3D jumpForce)
+{
+    for(int i = 0; i<= 300; i++)
+    {
+        ent->position.z += .1;
+    }
+}
 
 /*void ultAttack(Entity *self)
 {

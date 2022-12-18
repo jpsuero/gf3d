@@ -8,6 +8,6 @@
  * @param position where to spawn the platform at
  * @return NULL on error, or an platform entity pointer on success
  */
-Entity *platform_new(Vector3D position, int type);
+Entity *platform_new(Vector3D position, int type, int level);
 
 #endif 

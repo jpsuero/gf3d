@@ -43,6 +43,7 @@ typedef struct Entity_S
     int         frozenBuffer;
     int         isJumping;
     int         jumpBuffer;
+    int         buffer;
     int         slamming;
     int         isFrozen;
 

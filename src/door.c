@@ -42,7 +42,7 @@ void door_think(Entity *self)
     if(player ==NULL)return;
 
 
-    if(gfc_point_in_sphere(getPlayer()->position, self->circle))
+    if(gfc_point_in_sphere(player->position, self->circle))
     {
         switch(self->tag)
         {

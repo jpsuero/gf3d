@@ -9,7 +9,7 @@ void platform_think(Entity *self);
 void platform_update(Entity *self);
 
 
-Entity *platform_new(Vector3D position, int type)
+Entity *platform_new(Vector3D position, int type, int level)
 {
     Entity *ent = NULL;
     ent = entity_new();
@@ -24,6 +24,7 @@ Entity *platform_new(Vector3D position, int type)
     ent->update = platform_update;
     ent->scale = vector3d(10,10,5);
     ent->platformType = type;
+    ent->level = level;
     ent->tag = 3;
     return ent;
 }
@@ -36,12 +37,17 @@ void platform_think(Entity *self)
     if(!self)return;
     if(!player)return;
 
+    if(self->level != player->level)
+    {
+        entity_free(self);
+    }
+
     vector3d_copy(position,self->position);
     
     if(self->platformType == 0)
     {
-        self->scale = vector3d(1000,1000,1);
-        self->bounds = gfc_box(position.x-500, self->position.y-500, position.z,1000,1000,1);
+        self->scale = vector3d(100,100,1);
+        self->bounds = gfc_box(position.x-100, self->position.y-100, position.z,200,200,1);
     }
     else
     {
@@ -51,8 +57,8 @@ void platform_think(Entity *self)
     //side to side movement
     if(self->platformType == 2)
     {
-        self->shootBuffer++;
-        if(self->shootBuffer <= 300)
+        self->buffer++;
+        if(self->buffer <= 300)
         {
             self->position.x +=.1;
             if(gfc_box_overlap(self->bounds, player->bounds))
@@ -60,7 +66,7 @@ void platform_think(Entity *self)
                 player->position.x += .1;
             }
         }
-        else if(self->shootBuffer>=300 && self->shootBuffer < 900)
+        else if(self->buffer>=300 && self->buffer < 900)
         {
             self->position.x -= .1;
             if(gfc_box_overlap(self->bounds, player->bounds))
@@ -70,23 +76,10 @@ void platform_think(Entity *self)
         }
         else 
         {
-            self->shootBuffer =-300;
+            self->buffer =-300;
         }
     }
 
-
-    
-
-
-
-   // if(gfc_box_overlap(player->bounds, self->bounds))
-   // {
-   //     player->isGrounded =1;
-   // }
-   // else
-   // {
-   //     player->isGrounded = 0;
-   // }
 }
 
 void platform_update(Entity *self)

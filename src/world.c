@@ -5,10 +5,16 @@
 #include "world.h"
 #include "enemy1.h"
 #include "enemy2.h"
-
 #include "enemy3.h"
 #include "enemy4.h"
 #include "enemy5.h"
+#include "platform.h"
+#include "fireElement.h"
+#include "iceElement.h"
+#include "electricElement.h"
+#include "voidElement.h"
+#include "morphElement.h"
+#include "door.h"
 /*
 typedef struct
 {
@@ -54,7 +60,7 @@ World *world_load(char *filename)
         gfc_matrix_identity(w->modelMat);
         gfc_matrix_scale(
             w->modelMat,
-            vector3d(10,50,1)
+            vector3d(10,10,1)
         );
         gfc_matrix_translate(
             w->modelMat,
@@ -95,10 +101,32 @@ World *getLevel()
 
 void level1()
 {
-    enemy1_new(vector3d(-200,200,0), 6);
-    enemy1_new(vector3d(200,200,0), 6);
-    enemy1_new(vector3d(-200,-200,0), 6);
-    enemy1_new(vector3d(200,-200,0), 6);
+    Entity * door = NULL;
+
+    for (int i = 1; i <11; i++)
+    {
+        platform_new(vector3d(0, 100*i, 0), 1, 1);
+    }
+
+    platform_new(vector3d(0, 1100, 0), 2, 1);
+
+    for (int i = 1; i <11; i++)
+    {
+        platform_new(vector3d(100, 100*i+1100, 0), 1, 1);
+    }
+
+    platform_new(vector3d(100, 2300, 0), 0, 1);
+
+    fire_element_new(vector3d(100,2300,5));
+
+    door = door_new(vector3d(-100, 2600, 0), 2);
+    door->tag =2;
+
+    //enemy1_new(vector3d(-200,200,0), 6);
+    //enemy1_new(vector3d(200,200,0), 6);
+    //enemy1_new(vector3d(-200,-200,0), 6);
+    //enemy1_new(vector3d(200,-200,0), 6);
+
 
 }
 void level2()

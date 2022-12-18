@@ -35,7 +35,6 @@
 #include "electricElement.h"
 #include "voidElement.h"
 #include "morphElement.h"
-#define RAND_MAX = 2
 
 
 extern int __DEBUG;
@@ -87,12 +86,7 @@ int main(int argc,char *argv[])
     gf3d_camera_set_scale(vector3d(1,1,1));
     Entity *player = player_new(vector3d(0,-50,10));
     
-    for (int p=0; p<=30; p++)
-    {
-        platform_new(vector3d(0, 100*p, 0), 2);
-    }
-    
-    platform_new(vector3d(0,0,-20), 0);
+    platform_new(vector3d(0,0,-20), 0, 1);
 
     Entity *door1 = door_new(vector3d(-150, 50, 0), 1);
     door1->tag =1;

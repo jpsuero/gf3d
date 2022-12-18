@@ -2,5 +2,54 @@
     "world":
     {
         "model":"testworld1"
+        
+    },
+    "enemies":
+    {
+        "enemy1":
+        {
+            "type":"enemy1",
+            "model":"cube1",
+            "position":
+            {
+                "x":"-200",
+                "y":"200",
+                "z":"0"
+            }
+        },
+        "enemy2":
+        {
+            "type":"enemy1",
+            "model":"cube1",
+            "position":
+            {
+                "x":"200",
+                "y":"200",
+                "z":"0"
+            }
+        },
+        "enemy3":
+        {
+            "type":"enemy1",
+            "model":"cube1",
+            "position":
+            {
+                "x":"-200",
+                "y":"-200",
+                "z":"0"
+            }
+        },
+        "enemy4":
+        {
+            "type":"enemy1",
+            "model":"cube1",
+            "position":
+            {
+                "x":"200",
+                "y":"-200",
+                "z":"0"
+            }
+        }
+
     }
 }

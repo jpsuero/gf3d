@@ -194,7 +194,6 @@ void player_think(Entity *self)
         {
             self->isJumping = 1;
             gfc_sound_play(boing, 0, 10, -1, -1);
-
             ////old dub jump
             //for (int i =0; i<1000; i++)
             //{

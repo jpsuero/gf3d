@@ -47,6 +47,8 @@ void electric_element_think(Entity *self)
         entity_free(self);
     }
 
+    
+
 }
 
 void electric_element_update(Entity *self)

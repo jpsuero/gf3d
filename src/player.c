@@ -23,6 +23,7 @@ Entity *player_new(Vector3D position)
     Entity *ent = NULL;
     const char * model = NULL;
     int health = 5;
+    float grav = 0;
 
 
     ent = entity_new();
@@ -38,6 +39,7 @@ Entity *player_new(Vector3D position)
     sj_get_integer_value(sj_object_get_value(json, "health"), &health);
 
 
+
     ent->model = gf3d_model_load((char *)model);
     ent->think = player_think;
     ent->update = player_update;
@@ -46,7 +48,7 @@ Entity *player_new(Vector3D position)
     ent->rotation.x = -M_PI;
     ent->rotation.y = -M_PI;
     ent->rotation.z = GFC_HALF_PI;
-    ent->gravity = vector3d(0, 0, -.1);
+    ent->gravity = vector3d(0, 0, grav);
     ent->canJump = 1;
     ent->jumpCount = 0;
     ent->scale = vector3d(1,1,1);
@@ -99,13 +101,20 @@ void player_think(Entity *self)
     vector3d_set_magnitude(&camRight,0.15);
 
     //player hitbox
-    self->bounds = gfc_box(self->position.x-5, self->position.y-5, self->position.z-5, 10, 10, 10);
+    if(self->element!=4)
+    {
+        self->bounds = gfc_box(self->position.x-5, self->position.y-5, self->position.z-5, 10, 10, 10);
+    }
+    else
+    {
+        self->bounds = gfc_box(self->position.x-5, self->position.y-5, self->position.z-10, 10, 10, 10);
+    }
 
     //groundcheck
     collider = groundCheck(self);
     if(collider != NULL)
         {
-            if(collider->tag ==3)
+            if(collider->tag ==3 || collider->tag == 10)
             {
                 self->isGrounded =1;
             }
@@ -116,20 +125,44 @@ void player_think(Entity *self)
     }
 
 
+    if(self->trigger1)
+    {
+        platform_new(vector3d(0, 400, 250), 1, 4);
+    }
+
+    if(self->trigger2)
+    {
+        platform_new(vector3d(0, 400, 250), 1, 4);
+    }
+
+    
+
+
+    //flight for cheating
     if(keys[SDL_SCANCODE_Q])
     {
-        self->position.z += 1;
+        self->position.z = 15;
     }
     
     //gravity
     if(self->isGrounded == 0)
     {
-        vector3d_add(self->position,self->position, self->gravity);
+        self->acceleration.z = -.0025;
+        //slog("not grounded");
     }
-    else
+    else if(self->isGrounded == 1 && self->isDrowning == 0)
     {
+        self->velocity.z =0;
+        self->acceleration.z =0;
         self->canJump = 1;
         self->jumpCount = 0;
+        //slog("grounded");
+    }
+
+    //player reset
+    if(self->position.z <= -50)
+    {
+        self->position = vector3d(0,0,0);
     }
 
     //slam gravity
@@ -154,6 +187,11 @@ void player_think(Entity *self)
             //vector3d_add(self->position,self->position, camForward);
             self->rotation.z = self->camRotate.z;  
         }
+        else
+        {
+            self->velocity.x = 0;
+            self->velocity.y = 0;
+        }
         if (keys[SDL_SCANCODE_S])
         {
             vector3d_add(self->position,self->position,-camForward);
@@ -174,7 +212,10 @@ void player_think(Entity *self)
         }
         if (keys[SDL_SCANCODE_SPACE] && self->canJump && self->jumpCount == 0)
         {
-            self->isJumping = 1;
+            
+            self->velocity.z = .5;
+            
+            //self->isJumping = 1;
             gfc_sound_play(boing, 0, 10, -1, -1);
             //old jump mechanics
             //for (int i =0; i<1000; i++)
@@ -184,7 +225,7 @@ void player_think(Entity *self)
             //}
             self->canJump = 0;
             self->jumpCount ++;
-            slog("jump");
+            //slog("jump");
         }
         else if (!keys[SDL_SCANCODE_SPACE] && self->jumpCount == 1)
         {
@@ -192,7 +233,8 @@ void player_think(Entity *self)
         }
         else if (keys[SDL_SCANCODE_SPACE] && self->jumpCount == 1 && self->canJump)
         {
-            self->isJumping = 1;
+            self->velocity.z = .5;
+            //self->isJumping = 1;
             gfc_sound_play(boing, 0, 10, -1, -1);
             ////old dub jump
             //for (int i =0; i<1000; i++)
@@ -325,7 +367,7 @@ void player_update(Entity *self)
         else
         {
             position.z += 50;
-            rotation.x += M_PI*0.030;
+            rotation.x += M_PI*0.050;
         }
         
         w = vector2d_from_angle(self->camRotate.z);
@@ -334,7 +376,7 @@ void player_update(Entity *self)
         vector3d_add(position,position,-forward);
     
  
-    gf3d_camera_set_position(vector3d(position.x, position.y, 30));
+    gf3d_camera_set_position(vector3d(position.x, position.y, position.z));
     gf3d_camera_set_rotation(rotation);
     
 }
@@ -368,10 +410,11 @@ void meleeAttack(Entity *self, Vector3D direction)
 
 void addForce(Entity * ent, Vector3D force)
 {
-    ent->position.x += force.x;
-    ent->position.y += force.y;
-    ent->position.z += force.z;
+    ent->velocity.x = force.x;
+    ent->velocity.y = force.y;
+    //ent->velocity.z = force.z;
 }
+
 
 void jump(Entity * ent, Vector3D jumpForce)
 {

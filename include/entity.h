@@ -46,6 +46,9 @@ typedef struct Entity_S
     int         buffer;
     int         slamming;
     int         isFrozen;
+    int         isDrowning;
+    int         trigger1;
+    int         trigger2;
 
     int         fire;
     int         ice;

@@ -86,18 +86,18 @@ int main(int argc,char *argv[])
     gf3d_camera_set_scale(vector3d(1,1,1));
     Entity *player = player_new(vector3d(0,-50,10));
     
-    platform_new(vector3d(0,0,-20), 0, 1);
+    platform_new(vector3d(0,0,-20), 0, 0);
 
-    Entity *door1 = door_new(vector3d(-150, 50, 0), 1);
+    Entity *door1 = door_new(vector3d(-50, 100, 10), 1);
     door1->tag =1;
-    Entity *door2 = door_new(vector3d(-75, 100, 0), 2);
+    Entity *door2 = door_new(vector3d(-0, 100, 10), 2);
     door2->tag =2;
-    Entity *door3 = door_new(vector3d(0, 150, 0), 3);
+    Entity *door3 = door_new(vector3d(50, 100, 10), 3);
     door3->tag =3;
     Entity *door4 = door_new(vector3d(75, 100, 0), 4);
     door4->tag =4;
-    Entity *door5 = door_new(vector3d(150, 50, 0), 5);
-    door5->tag =5;
+    //Entity *door5 = door_new(vector3d(150, 50, 0), 5);
+    //door5->tag =5;
      
     //audio
     music = Mix_LoadMUS("music/finalboss.mp3");

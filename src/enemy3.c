@@ -37,7 +37,6 @@ void enemy3_think(Entity *self)
     
     if(!player)return;
     
-    if(player->level != 3)entity_free(self);
 
     if(self->isFrozen == 0  && self->shocked ==0)
     {
@@ -68,7 +67,6 @@ void enemy3_think(Entity *self)
     if(gfc_point_in_sphere(player->position, self->circle))
     {
         player->isSquished = 1;
-        player->health--;
         entity_free(self);
         return;
     }

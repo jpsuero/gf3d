@@ -33,6 +33,7 @@ Entity *iceshard(Vector3D position,  Vector3D direction, int team)
 void iceshard_think(Entity *self)
 {
     Entity * collider = NULL;
+    Entity * collider2 = NULL;
     if (!self)return;
     
     self->lifespan++;
@@ -43,6 +44,7 @@ void iceshard_think(Entity *self)
     if(!self)return;
     
     self->circle = gfc_sphere(self->position.x, self->position.y, self->position.z, 3);
+    self->bounds = gfc_box(self->position.x-5, self->position.y-5, self->position.z-5, 10, 10, 10);
 
     if(gfc_point_in_sphere(getPlayer()->position, self->circle)&& self->team == 2 && getPlayer()->isFrozen ==0)
     {
@@ -60,6 +62,16 @@ void iceshard_think(Entity *self)
             entity_free(self);
         }
     }
+    collider2 = groundCheck(self);
+    if(collider2 != NULL)
+    {
+        if(collider2->tag == 10)
+        {
+            slog("freeze water");
+            collider2->isFrozen =1;
+        }
+    }
+
 
     if(self->lifespan > 5000)
     {

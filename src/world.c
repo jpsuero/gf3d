@@ -2,6 +2,9 @@
 #include "simple_json.h"
 #include "gfc_types.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "world.h"
 #include "enemy1.h"
 #include "enemy2.h"
@@ -60,7 +63,7 @@ World *world_load(char *filename)
         gfc_matrix_identity(w->modelMat);
         gfc_matrix_scale(
             w->modelMat,
-            vector3d(10,10,1)
+            vector3d(100,100,1)
         );
         gfc_matrix_translate(
             w->modelMat,
@@ -103,23 +106,29 @@ void level1()
 {
     Entity * door = NULL;
 
+    //first set of platforms
     for (int i = 1; i <11; i++)
     {
         platform_new(vector3d(0, 100*i, 0), 1, 1);
     }
-
-    platform_new(vector3d(0, 1100, 0), 2, 1);
-
+    //side to side platform
+    platform_new(vector3d(50, 1100, 0), 2, 1);
+    //2nd set of platforms
     for (int i = 1; i <11; i++)
     {
         platform_new(vector3d(100, 100*i+1100, 0), 1, 1);
     }
 
+
+    //level floor start
+    platform_new(vector3d(0, 0, 0), 0, 1);
+    //level floor end
     platform_new(vector3d(100, 2300, 0), 0, 1);
 
     fire_element_new(vector3d(100,2300,5));
 
-    door = door_new(vector3d(-100, 2600, 0), 2);
+    //door to level 2
+    door = door_new(vector3d(100, 2400, 10), 2);
     door->tag =2;
 
     //enemy1_new(vector3d(-200,200,0), 6);
@@ -131,6 +140,43 @@ void level1()
 }
 void level2()
 {
+    platform_new(vector3d(0, 0, -10), 0, 2);
+
+
+     Entity * door = NULL;
+
+    //first set of platforms
+    for (int i = 1; i <11; i++)
+    {
+        platform_new(vector3d(0, 100*i, 0), 1, 2);
+    }
+    //falling platforms
+    for (int i = 1; i <11; i++)
+    {
+        if(i%2 ==0)
+        {
+            platform_new(vector3d(25, 100*i+1000, 0), 3, 2);
+        }
+        else
+        {
+            platform_new(vector3d(-25, 100*i+1000, 0), 3, 2);
+        }
+    }
+
+    //side to side platform #2
+    platform_new(vector3d(0, 2100, 0), 2, 2);
+
+
+    //level floor end
+    platform_new(vector3d(0, 2300, 0), 0, 2);
+
+    electric_element_new(vector3d(0,2300,5));
+
+    //door to level 3
+    door = door_new(vector3d(0, 2400, 10), 2);
+    door->tag =3;
+
+
     enemy2_new(vector3d(-200,200,0), 6);
     enemy2_new(vector3d(200,200,0), 6);
     enemy2_new(vector3d(-200,-200,0), 6);
@@ -139,18 +185,85 @@ void level2()
 }
 void level3()
 {
-    enemy3_new(vector3d(-200,200,0), 6);
-    enemy3_new(vector3d(200,200,0), 6);
-    enemy3_new(vector3d(-200,-200,0), 6);
-    enemy3_new(vector3d(200,-200,0), 6);
+    Entity * door = NULL;
+    
+    platform_new(vector3d(0, 0, 0), 5, 3);
+    
+    for (int i = 1; i <11; i++)
+    {   
+        if(i%2 ==0)
+        {
+            platform_new(vector3d(40, 100*i+1000, 25), 6, 3);
+            platform_new(vector3d(-40, 100*i+1000, 25), 6, 3);
+        }
+        else
+        {
+            platform_new(vector3d(0, 100*i+1000, 25), 6, 3);
+        }
+    }
+
+    platform_new(vector3d(0, 2300, 0), 0, 3);
+
+    //door to level 3
+    door = door_new(vector3d(0, 2400, 10), 2);
+    door->tag =4;
+
+    morph_element_new(vector3d(0,2300,5));
+
+
+
+    //enemy3_new(vector3d(-200,200,0), 6);
+    //enemy3_new(vector3d(200,200,0), 6);
+    //enemy3_new(vector3d(-200,-200,0), 6);
+    //enemy3_new(vector3d(200,-200,0), 6);
 
 }
 void level4()
 {
-    enemy4_new(vector3d(-200,200,0), 6);
-    enemy4_new(vector3d(200,200,0), 6);
-    enemy4_new(vector3d(-200,-200,0), 6);
-    enemy4_new(vector3d(200,-200,0), 6);
+    //battle arena
+    platform_new(vector3d(0, 0, 0), 7, 4);
+
+
+    //water 
+    platform_new(vector3d(0, 600, -50), 8, 4);
+    //waterfall
+    platform_new(vector3d(1000, 600, 0), 11, 4);
+
+    //next stage
+    platform_new(vector3d(0, 850, 0), 0, 4);
+    
+    //elevator
+    platform_new(vector3d(0, 800, 0), 9, 4);
+    
+    //enemies
+    enemy2_new(vector3d(-200,200,10), 6);
+    enemy2_new(vector3d(200,200,10), 6);
+    enemy2_new(vector3d(-200,-200,10), 6);
+    enemy2_new(vector3d(200,-200,10), 6);
+    
+    enemy1_new(vector3d(-200,200,10), 6);
+    enemy1_new(vector3d(200,200,10), 6);
+    enemy1_new(vector3d(-200,-200,10), 6);
+    enemy1_new(vector3d(200,-200,10), 6);
+
+    enemy3_new(vector3d(-100,100,10), 6);
+    enemy3_new(vector3d(100,100,10), 6);
+    enemy3_new(vector3d(-100,-100,10), 6);
+    enemy3_new(vector3d(100,-100,10), 6);
+
+    //floor 2
+    platform_new(vector3d(0, 600, 250), 0, 4);
+
+    platform_new(vector3d(-500, 0, 250), 15, 4);
+
+    platform_new(vector3d(500, 0, 250), 16, 4);
+
+    platform_new(vector3d(0, 0, 250), 0, 4);
+
+
+
+
+
 }
 void level5()
 {

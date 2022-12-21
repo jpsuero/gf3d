@@ -41,6 +41,10 @@ void door_think(Entity *self)
     Entity * player = getPlayer();
     if(player ==NULL)return;
 
+   // if(self->tag != player->level +1)
+   // {
+   //     entity_free(self);
+   // }
 
     if(gfc_point_in_sphere(player->position, self->circle))
     {
@@ -54,6 +58,7 @@ void door_think(Entity *self)
                 player->position = vector3d(0,0,0);
                 level1();
                 slog("player colliding door 1");
+                entity_free(self);
                 break;
             }
             case 2 :
@@ -71,7 +76,7 @@ void door_think(Entity *self)
             {
                 player->level = 3;
                 world_delete(getLevel());
-                world_load("config/testworld3.json");
+                world_load("config/testworld5.json");
                 player->position = vector3d(0,0,0);
                 level3();
                 slog("player colliding door 3");

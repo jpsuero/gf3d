@@ -33,6 +33,7 @@ Entity *lightning(Vector3D position,  Vector3D direction, int team)
 void lightning_think(Entity *self)
 {
     Entity * collider = NULL;
+    Entity * collider2 = NULL;
     if (!self)return;
     
     self->lifespan++;
@@ -52,6 +53,16 @@ void lightning_think(Entity *self)
         {
             collider->shocked =1;
             entity_free(self);
+        }
+    }
+
+    collider2 = groundCheck(self);
+    if(collider2 != NULL)
+    {
+        if(collider2->tag == 10)
+        {
+            slog("trigger enabled");
+            collider2->shocked =1;
         }
     }
 

@@ -44,7 +44,6 @@ void enemy5_think(Entity *self)
     direction.y = target.y - self->position.y;
     vector2d_set_magnitude(&direction,.4);
 
-    if(getPlayer()->level != 5)entity_free(self);
 
     self->shootBuffer++;
     if(self->shootBuffer == 10 && self->isFrozen == 0)

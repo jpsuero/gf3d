@@ -34,8 +34,6 @@ Entity *enemy1_new(Vector3D position, int tag)
 void enemy1_think(Entity *self)
 {
 
-    if(getPlayer()->level != 1)entity_free(self);
-
     Vector2D direction;
     Vector3D target = getPlayer()->position;
     direction.x = target.x - self->position.x;
